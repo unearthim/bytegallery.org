@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- === 1. Primary Meta Tags === -->
+    <title>The Byte Gallery | An Interactive Museum of Digital Artifacts</title>
+    <meta name="title" content="The Byte Gallery | An Interactive Museum of Digital Artifacts">
+    <meta name="description" content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner. An unearth.im project.">
+    <meta name="keywords" content="Digital Archaeology, Byte Gallery, Web History, Internet Fossils, Skeuomorphism, Web 1.0, UI/UX History, Digital Preservation, unearth.im">
+    <meta name="author" content="bytegallery.org (An unearth.im Project)">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <link rel="canonical" href="https://bytegallery.org/" />
+
+    <!-- === 2. Webmention Endpoint === -->
+    <link rel="webmention" href="https://webmention.io/unearth.im/webmention" />
+
+    <!-- === 3. Open Graph / Facebook === -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bytegallery.org/">
+    <meta property="og:title" content="The Byte Gallery | An Interactive Museum of Digital Artifacts">
+    <meta property="og:description" content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner.">
+    <meta property="og:image" content="https://bytegallery.org/og-image.png">
+    <meta property="og:site_name" content="The Byte Gallery">
+
+    <!-- === 4. Twitter Card === -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bytegallery.org/">
+    <meta property="twitter:title" content="The Byte Gallery | An Interactive Museum of Digital Artifacts">
+    <meta property="twitter:description" content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner.">
+    <meta property="twitter:image" content="https://bytegallery.org/og-image.png">
+
+    <!-- === 5. Favicons & Theme Colors === -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#fcfaf5">
+    <meta name="msapplication-TileColor" content="#BF5700">
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- 3. Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+
+        /* Custom Tailwind Config via JS */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+              }
+            }
+          }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 4. React Root -->
+    <div id="root"></div>
+
+    <!-- 5. React Component & Render Call -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- SUB-COMPONENTS ---
+
+        const ExhibitCard = ({ exhibit, index }) => {
+            const isLocked = exhibit.status !== 'open';
+            const hasLink = exhibit.link && !isLocked;
+
+            const CardContent = () => (
+                <div className={`font-ui group relative border-b border-r border-unearth-border 
+                    p-8 h-80 flex flex-col justify-between transition-all duration-300
+                    ${isLocked ? 'bg-gray-50' : 'bg-unearth-surface hover:shadow-xl hover:-translate-y-1 cursor-pointer'}
+                `}>
+                    {/* Accession Number */}
+                    <div className="flex justify-between items-start">
+                        <span className="font-mono text-xs text-unearth-primary/80 tracking-widest">
+                            {exhibit.id}
+                        </span>
+                        {exhibit.status === 'open' && (
+                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        )}
+                        {exhibit.status === 'excavating' && (
+                            <div className="flex items-center gap-2 text-xs font-mono text-unearth-secondary/70">
+                                <i className="fa-solid fa-person-digging text-xs"></i> <span>DIGGING</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="z-10 my-auto">
+                        <h3 className={`
+                            text-2xl font-bold mb-2 text-unearth-main 
+                            ${!isLocked ? 'group-hover:text-unearth-primary transition-colors' : ''}
+                        `}>
+                            {exhibit.title}
+                        </h3>
+                        <p className="font-narrative text-sm text-unearth-secondary line-clamp-2 leading-relaxed">
+                            {exhibit.description}
+                        </p>
+                    </div>
+
+                    {/* Footer / Action */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-dashed border-unearth-border">
+                        <span className="text-xs text-unearth-secondary/70 font-mono uppercase">
+                            Origin: {exhibit.era}
+                        </span>
+                        
+                        {isLocked ? (
+                            <i className="fa-solid fa-lock text-unearth-secondary/50"></i>
+                        ) : (
+                            <div className="flex items-center gap-2 text-unearth-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+                                <span>INSPECT</span>
+                                <i className="fa-solid fa-arrow-right"></i>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+
+            if (hasLink) {
+                return <a href={exhibit.link}><CardContent /></a>;
+            }
+            return <CardContent />;
+        };
+
+        const Header = () => (
+            <header className="font-ui fixed top-0 left-0 right-0 z-40 bg-unearth-bg/80 backdrop-blur-sm border-b border-unearth-border">
+                <div className="max-w-screen-2xl mx-auto px-6 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-unearth-primary flex items-center justify-center font-bold text-white text-lg rounded-sm">
+                            u
+                        </div>
+                        <div className="flex flex-col leading-none">
+                            <span className="text-unearth-main font-bold tracking-tight">unearth.im</span>
+                            <span className="text-[10px] text-unearth-secondary font-mono uppercase tracking-widest">Byte Gallery</span>
+                        </div>
+                    </div>
+                    
+                    <nav className="hidden md:flex gap-6 text-xs font-mono text-unearth-secondary uppercase tracking-widest">
+                        <a href="https://archaeobytology.org/" className="hover:text-unearth-primary transition-colors">Manifesto</a>
+                        <a href="#" className="hover:text-unearth-primary transition-colors">Archive</a>
+                        <a href="#" className="hover:text-unearth-primary transition-colors">Contact</a>
+                    </nav>
+                </div>
+            </header>
+        );
+
+        // --- MAIN APP ---
+
+        function ByteGallery() {
+
+            const exhibits = [
+                {
+                    id: "ART-001",
+                    title: "The Clickable Fossil",
+                    era: "1990 - 2024",
+                    description: "Tracing the evolution of the web's primary verb. From the gray bevels of Windows 95 to the haptic organicism of today.",
+                    status: "open",
+                    link: "./fossil/"
+                },
+                {
+                    id: "ART-002",
+                    title: "The Eternal Spinner",
+                    era: "1995 - Present",
+                    description: "An examination of patience. The history of loading states, progress bars, and the psychology of waiting on the web.",
+                    status: "open", // Changed from 'excavating' to 'open' to make it linkable
+                    link: "./spinner/"
+                },
+                {
+                    id: "ART-003",
+                    title: "Blue & Underlined",
+                    era: "1991 - 2010",
+                    description: "The hyperlink in its rawest form. A tribute to the default blue (#0000EE) that connected the world.",
+                    status: "open",
+                    link: "./blue/"
+                },
+                {
+                    id: "ART-004",
+                    title: "The <Blink> Tag",
+                    era: "1994 - 2013",
+                    description: "A chaotic monument to the browser wars. Visual noise, user hostility, and the early web's refusal to sit still.",
+                    status: "open",
+                    link: "./blink/"
+                },
+                {
+                    id: "ART-005",
+                    title: "Skeuomorph City",
+                    era: "2007 - 2012",
+                    description: "When pixels pretended to be atoms. An ode to rich textures like leather, paper, and wood grain.",
+                    status: "open",
+                    link: "./skeumorph/"
+                },
+                {
+                    id: "ART-006",
+                    title: "The Shrinking Pillar",
+                    era: "1990 - Present",
+                    description: "The unsung hero of navigation. Investigating the shrinking real estate of the visual indicator of depth.",
+                    status: "open",
+                    link: "./scrollbar/"
+                },
+                {
+                    id: "ART-007",
+                    title: "The Immortal Icon",
+                    era: "1981 - Present",
+                    description: "The ultimate skeuomorph. An icon that has outlived its physical counterpart by decades, representing the abstract concept of 'saving'.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-008",
+                    title: "The Digital Finger",
+                    era: "1968 - Present",
+                    description: "Our primary avatar on the screen. From the blinking terminal block to the pointing hand, tracing the evolution of our digital presence.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-009",
+                    title: "The Unfinished Web",
+                    era: "1995 - 2001",
+                    description: "A tribute to the chaotic creativity of Web 1.0. The shoveling worker GIFs, spinning email signs, and hit counters of a web that was always being built.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-010",
+                    title: "The Mythical Line",
+                    era: "1996 - 2015",
+                    description: "An investigation into the newspaper metaphor that ruled web design for 15 years ('Above the fold!'), and how the infinite scroll finally killed it.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-011",
+                    title: "The Dead End",
+                    era: "1994 - Present",
+                    description: "A history of getting lost online. From raw server error text to the whimsical, branded apology pages of the modern web.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-012",
+                    title: "The Forum Signature",
+                    era: "1999 - 2010",
+                    description: "A digital business card of personality. A small, customizable block for quotes, hardware specs, and absurdly large animated GIFs.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-013",
+                    title: "The Splash Page",
+                    era: "1997 - 2005",
+                    description: "The 'Click to Enter' page. A digital velvet rope, often built in Flash, that served no purpose other than to look cool before the main content.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-014",
+                    title: "The Digital Suburb",
+                    era: "1994 - 2009",
+                    description: "A homage to the branding of the web's first digital neighborhoods, tracing the GeoCities logo from quirky community to corporate consolidation.",
+                    status: "open",
+                    link: "./geocities/"
+                },
+                {
+                    id: "ART-015",
+                    title: "The Public Ledger",
+                    era: "1996 - 2002",
+                    description: "Before 'comment sections,' there was the Guestbook. A public, chronological log of visitors who 'signed' their name, leaving a digital trace of their presence.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-016",
+                    title: "The Digital Chain",
+                    era: "1995 - 2003",
+                    description: "The Web Ring. A decentralized navigation system connecting sites with similar themes in a circular loop. The original, human-curated recommendation engine.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-017",
+                    title: "The Invisible Skeleton",
+                    era: "1996 - 2004",
+                    description: "An ode to table-based layouts and the 1x1 spacer GIF. The invisible scaffolding that held the early visual web together before CSS matured.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-018",
+                    title: "The Digital Odometer",
+                    era: "1995 - 2001",
+                    description: "The Hit Counter. A simple, often garish, odometer displaying page visits. A primitive form of analytics and the web's first measure of public validation.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-019",
+                    title: "The <font> Tag",
+                    era: "1995 - 2002",
+                    description: "The pre-CSS method for styling text. A chaotic but essential tool for adding color, size, and personality to a page, one tag at a time.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-020",
+                    title: "The Browser War Badge",
+                    era: "1996 - 2000",
+                    description: "'Best Viewed in Netscape Navigator 3.0'. A badge of honor and a technical requirement from the front lines of the first browser wars.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-021",
+                    title: "The Unsolicited Serenade",
+                    era: "1997 - 2003",
+                    description: "The embedded MIDI file. A tiny, terrible-sounding song that auto-played on page load, representing the original sin of web audio.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-022",
+                    title: "The Heavy Applet",
+                    era: "1996 - 2005",
+                    description: "The Java Applet. A slow-loading, sandboxed application that promised desktop-like functionality, often used for clocks, games, or falling snow effects.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-023",
+                    title: "The Clickable Map",
+                    era: "1996 - 2002",
+                    description: "The Image Map. A single image with clickable 'hotspots' defined by coordinates, used for navigation before CSS buttons were common.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-024",
+                    title: "The Paneled Window",
+                    era: "1996 - 2003",
+                    description: "The <frameset>. A way to divide the browser window into separate panes, often for persistent navigation. A rigid but powerful layout tool before modern CSS.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-025",
+                    title: "The Digital Trophy",
+                    era: "1996 - 2002",
+                    description: "Before 'likes,' there were awards. A system of peer recognition where sites would bestow 'Cool Site' trophies upon each other, creating a decentralized web of validation.",
+                    status: "excavating",
+                    link: null
+                },
+                {
+                    id: "ART-026",
+                    title: "The Digital Homestead",
+                    era: "1994 - 2004",
+                    description: "The personal homepage. A hand-coded corner of the web, filled with passions, GIFs, and an 'About Me' section, long before the template of social media.",
+                    status: "excavating",
+                    link: null
+                }
+            ];
+
+            return (
+                <div className="min-h-screen relative font-ui">
+                    <Header />
+
+                    {/* Hero Section */}
+                    <section className="pt-40 pb-20 px-6 max-w-screen-2xl mx-auto relative">
+                        <div className="relative z-10 max-w-4xl">
+                            <div className="flex items-center gap-3 mb-6">
+                                <i className="fa-solid fa-terminal text-unearth-primary"></i>
+                                <span className="font-mono text-sm text-unearth-primary">EST. 2025 // UNEARTH.IM</span>
+                            </div>
+                            
+                            <h1 className="text-6xl md:text-8xl font-black text-unearth-main leading-[0.9] tracking-tighter mb-8">
+                                ARCHIVING THE <br />
+                                <span className="text-unearth-secondary">ANTHROPOCENE</span> <br />
+                                <span className="text-unearth-primary">WEB.</span>
+                            </h1>
+                            
+                            <p className="font-narrative text-xl text-unearth-secondary max-w-2xl leading-relaxed">
+                                The internet is not a cloud; it is a geological formation. 
+                                We excavate code, design patterns, and user behaviors to reveal 
+                                the human history buried in the source.
+                            </p>
+
+                            <div className="mt-12 flex flex-col md:flex-row gap-8 border-t border-unearth-border pt-8">
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-2xl font-bold text-unearth-main">0{exhibits.length}</span>
+                                    <span className="text-xs font-mono text-unearth-secondary uppercase">Total Artifacts</span>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-2xl font-bold text-unearth-main">
+                                        {exhibits.filter(e => e.status === 'open').length}
+                                    </span>
+                                    <span className="text-xs font-mono text-unearth-secondary uppercase">Open to Public</span>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-2xl font-bold text-unearth-main">
+                                        {exhibits.filter(e => e.status === 'excavating').length}
+                                    </span>
+                                    <span className="text-xs font-mono text-unearth-secondary uppercase">Excavating</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Gallery Grid */}
+                    <section className="border-t border-unearth-border bg-gray-50/50">
+                        <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-l border-unearth-border">
+                            {exhibits.map((exhibit, index) => (
+                                <ExhibitCard key={index} exhibit={exhibit} index={index} />
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="border-t border-unearth-border py-20 bg-unearth-surface">
+                        <div className="max-w-screen-2xl mx-auto px-6 flex flex-col md:flex-row justify-between items-end gap-8">
+                            <div>
+                                <h4 className="text-2xl font-bold text-unearth-main mb-2">unearth.im</h4>
+                                <p className="font-narrative text-unearth-secondary text-sm max-w-md">
+                                    "Landmarks, not just addresses." <br/>
+                                    Digital Archaeology & Brand Foundry.
+                                </p>
+                            </div>
+                            <div className="flex flex-col items-end text-right">
+                                <div className="flex gap-4 mb-4 text-unearth-secondary">
+                                    <a href="#" className="hover:text-unearth-primary"><i className="fa-brands fa-twitter"></i></a>
+                                    <a href="#" className="hover:text-unearth-primary"><i className="fa-brands fa-instagram"></i></a>
+                                </div>
+                                <span className="font-mono text-xs text-unearth-secondary/70">
+                                    © 2025 Jojo. All rights reserved.
+                                </span>
+                                <span className="font-mono text-xs text-unearth-primary/30 mt-1">
+                                    SESSION_ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
+                                </span>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- 6. Render the App ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<ByteGallery />);
+    </script>
+
+</body>
+</html>

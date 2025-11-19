@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Digital Suburb | Digital Archaeology</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Lora:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 3. Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* --- HISTORICAL ARTIFACT STYLES (PRESERVED) --- */
+
+        /* ERA 1: BHI (1995) */
+        .era-1-frame {
+            background-color: #c0c0c0;
+            color: #000;
+            font-family: 'Times New Roman', serif;
+            border: 2px solid #808080;
+            padding: 20px;
+        }
+        .bhi-header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 20px; padding-bottom: 10px; }
+        .bhi-link { color: #0000EE; text-decoration: underline; cursor: pointer; }
+
+        /* ERA 2: The Neighborhoods (1998) */
+        .era-2-frame {
+            background-color: #000000;
+            color: #ffff00; /* GeoCities Yellow */
+            font-family: 'Verdana', sans-serif;
+            border: 2px solid #666;
+        }
+        .geo-logo-text {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 32px;
+            color: #ffffff;
+            text-shadow: 2px 2px 0 #0000ff;
+            letter-spacing: -1px;
+        }
+        .neighborhood-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+        .hood-btn { background: #000033; border: 1px solid #00ff00; color: #00ff00; font-size: 10px; padding: 8px; text-align: center; cursor: pointer; font-family: monospace; }
+        .hood-btn:hover { background: #00ff00; color: #000; }
+
+        /* ERA 3: Yahoo! GeoCities (2000) */
+        .era-3-frame { background-color: #ffffff; color: #000000; font-family: 'Arial', sans-serif; }
+        .yahoo-header { background: #7B0099; color: white; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .yahoo-sidebar { background: #f0f0f0; padding: 15px; font-size: 12px; border-right: 1px solid #ccc; }
+        .yahoo-btn { display: block; background: #eee; border: 1px solid #999; padding: 4px 8px; margin-bottom: 8px; font-size: 11px; text-decoration: none; color: #333; }
+
+        /* ERA 4: The End (2009) */
+        .era-4-frame {
+            background-color: #ffffff;
+            color: #333;
+            font-family: 'Georgia', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            border-top: 5px solid #7B0099;
+        }
+
+        /* Animations */
+        .blink-slow { animation: blink 1.5s steps(2, start) infinite; }
+        @keyframes blink { to { visibility: hidden; } }
+        .glitch-text:hover { animation: glitch-anim 0.3s infinite; }
+        @keyframes glitch-anim { 0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) } 40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) } }
+
+        /* Custom Tailwind Config */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+                'mono': ['Space Mono', 'monospace'],
+              }
+            }
+          }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- COMPONENTS ---
+
+        const EraDisplay = ({ era }) => {
+            // Era 1: BHI (Beverly Hills Internet)
+            if (era.id === 'bhi') {
+                return (
+                    <div className="era-1-frame h-full overflow-y-auto">
+                        <div className="bhi-header">
+                            <h1 className="text-2xl font-bold">Beverly Hills Internet</h1>
+                            <div className="text-xs mt-2">User-Focused Virtual Communities</div>
+                        </div>
+                        <div className="flex gap-8 p-4">
+                            <div className="w-1/3 border-r border-black pr-4 text-sm">
+                                <p className="mb-4">Welcome to our community of "Homesteaders."</p>
+                                <ul className="list-disc pl-4 space-y-2">
+                                    <li><span className="bhi-link">Information</span></li>
+                                    <li><span className="bhi-link">Registration</span></li>
+                                    <li><span className="bhi-link">Search Pages</span></li>
+                                </ul>
+                            </div>
+                            <div className="w-2/3 text-sm">
+                                <p className="mb-4">We offer free home pages to all residents.</p>
+                                <p>Select a theme to view pages:</p>
+                                <div className="mt-4 grid grid-cols-2 gap-2 font-bold">
+                                    <span>&gt; Entertainment</span>
+                                    <span>&gt; Technology</span>
+                                    <span>&gt; Finance</span>
+                                    <span>&gt; Government</span>
+                                </div>
+                                <div className="mt-8 border border-black p-2 text-center font-bold">
+                                    <span className="blink-slow">NEW!</span> Chat Rooms Added
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 2: GeoCities Classic
+            if (era.id === 'classic') {
+                return (
+                    <div className="era-2-frame h-full flex flex-col p-4 overflow-y-auto">
+                        <div className="flex justify-between items-end mb-6 border-b border-gray-600 pb-4">
+                            <div>
+                                <div className="geo-logo-text">GeoCities</div>
+                                <div className="text-xs text-green-400 tracking-widest">WELCOME TO THE NEIGHBORHOOD</div>
+                            </div>
+                            <div className="text-xs text-gray-400 text-right">
+                                <div>Members: 2,405,112</div>
+                                <div className="text-yellow-200 blink-slow">JOIN NOW FOR FREE!</div>
+                            </div>
+                        </div>
+                        <div className="flex-1 flex gap-6">
+                            <div className="w-1/3">
+                                <div className="bg-blue-900 p-2 text-white text-center font-bold text-xs mb-2 border border-white">NAVIGATOR</div>
+                                <div className="text-xs space-y-2 font-mono text-green-300">
+                                    <div>[+] Your Home Page</div>
+                                    <div>[+] Utilities</div>
+                                    <div>[+] Chat</div>
+                                    <div>[+] Forums</div>
+                                </div>
+                                <div className="mt-8 text-center">
+                                    <div className="inline-block border-2 border-yellow-500 p-1">
+                                        <div className="bg-yellow-500 text-black font-bold text-xs px-2">NETSCAPE 4.0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-2/3">
+                                <h3 className="text-white font-bold border-b border-white mb-2 pb-1">Select a Neighborhood</h3>
+                                <div className="neighborhood-grid">
+                                    <div className="hood-btn">SiliconValley<br/><span className="text-gray-400">Tech & Hardware</span></div>
+                                    <div className="hood-btn">Hollywood<br/><span className="text-gray-400">Movies & Actors</span></div>
+                                    <div className="hood-btn">Area51<br/><span className="text-gray-400">Sci-Fi & Fantasy</span></div>
+                                    <div className="hood-btn">SunsetStrip<br/><span className="text-gray-400">Music & Rock</span></div>
+                                    <div className="hood-btn">WallStreet<br/><span className="text-gray-400">Business</span></div>
+                                    <div className="hood-btn">Heartland<br/><span className="text-gray-400">Family & Pets</span></div>
+                                </div>
+                                <div className="mt-6 text-center text-xs text-gray-500">(c) 1998 GeoCities. All rights reserved.</div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 3: Yahoo! Acquisition
+            if (era.id === 'yahoo') {
+                return (
+                    <div className="era-3-frame h-full flex flex-col">
+                        <div className="yahoo-header">
+                            <div className="font-bold italic text-xl">Yahoo!</div>
+                            <div className="text-sm opacity-80">GeoCities</div>
+                            <div className="ml-auto text-xs underline cursor-pointer">Sign In</div>
+                        </div>
+                        <div className="flex flex-1">
+                            <div className="w-48 yahoo-sidebar">
+                                <div className="font-bold mb-2 text-purple-900">Build Your Site</div>
+                                <div className="yahoo-btn">PageBuilder 2.0</div>
+                                <div className="yahoo-btn">File Manager</div>
+                                <div className="yahoo-btn">Add-Ons</div>
+                                <div className="font-bold mb-2 mt-6 text-purple-900">Search</div>
+                                <div className="border p-1 bg-white mb-2"><div className="text-gray-400 text-xs">Search Pages...</div></div>
+                                <div className="bg-purple-700 text-white text-xs text-center py-1 rounded">Go</div>
+                            </div>
+                            <div className="flex-1 p-6">
+                                <div className="border border-gray-300 p-4 bg-yellow-50 mb-6 text-sm">
+                                    <span className="font-bold text-red-600">Update:</span> Neighborhoods are now Categories. We are streamlining the address system. Your address is now <span className="font-mono bg-white px-1 ml-1">geocities.com/username</span>.
+                                </div>
+                                <h2 className="font-bold text-lg mb-4">Welcome to Yahoo! GeoCities</h2>
+                                <p className="text-sm text-gray-600 leading-relaxed mb-4">Create a web site in minutes. It's fast, easy, and free. Share your photos, connect with friends, and join the Yahoo! network.</p>
+                                <div className="grid grid-cols-2 gap-4 mt-8">
+                                    <div className="border p-4"><div className="font-bold text-sm mb-2">Personal Site</div><div className="text-xs text-gray-500">15MB Storage</div></div>
+                                    <div className="border p-4 bg-purple-50"><div className="font-bold text-sm mb-2">GeoCities Pro</div><div className="text-xs text-gray-500">Get your own domain!</div></div>
+                                </div>
+                            </div>
+                            <div className="w-32 bg-gray-100 border-l border-gray-200 p-2 flex flex-col items-center">
+                                <div className="text-[10px] text-gray-400 mb-1">ADVERTISEMENT</div>
+                                <div className="w-full h-64 bg-white border border-gray-300 flex items-center justify-center text-gray-300 text-xs">Banner Ad</div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 4: The Shutdown
+            if (era.id === 'closure') {
+                return (
+                    <div className="era-4-frame h-full">
+                        <div className="text-5xl font-bold text-purple-900 mb-4 font-sans italic">Yahoo!</div>
+                        <h1 className="text-3xl text-gray-700 mb-6 font-serif">GeoCities is closing.</h1>
+                        <p className="text-gray-500 max-w-md leading-relaxed mb-8">On October 26, 2009, your GeoCities site will no longer appear on the Web. You will no longer be able to create new GeoCities sites or upload files. <br/><br/>We are closing to focus on helping our customers explore and build relationships online in other ways.</p>
+                        <div className="flex gap-4">
+                            <button className="px-4 py-2 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">Read the FAQ</button>
+                            <button className="px-4 py-2 bg-purple-700 text-white rounded text-sm hover:bg-purple-800">Download Your Data</button>
+                        </div>
+                        <div className="mt-12 text-xs text-gray-400">Error 404: Neighborhood Not Found.</div>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button key={era.id} onClick={() => setEra(index)} className={`group flex items-center gap-4 text-left transition-all duration-300 ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-60 hover:opacity-100'}`}>
+                            <div className={`w-12 h-12 flex items-center justify-center rounded-full border transition-all duration-300 font-mono text-xs ${currentEra === index ? 'border-unearth-primary bg-unearth-primary/10 text-unearth-primary scale-110' : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-primary/30'}`}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>{era.title}</div>
+                                <div className="text-[10px] text-unearth-secondary/80 uppercase tracking-wider">{era.subtitle}</div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- MAIN APP ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+
+            const eras = [
+                { id: 'bhi', year: '1994', title: 'The Homestead', subtitle: 'Beverly Hills Internet', description: "Before it was GeoCities, it was BHI. The concept was revolutionary: spatial metaphors for digital data. Users were 'Homesteaders.' The design was stark—HTML 1.0. Gray backgrounds and Times New Roman were the standard because monitors were rarely capable of more.", tags: ['HTML 1.0', 'Spatial Metaphor', 'BHI'] },
+                { id: 'classic', year: '1998', title: 'The Neighborhoods', subtitle: 'SiliconValley & Area51', description: "The golden age. GeoCities organized the chaos of the early web into 'Neighborhoods' based on interest. If you liked Sci-Fi, you lived in Area51. If you liked Tech, SiliconValley. This created instant context and community. The aesthetic was chaotic, vibrant, and distinctively amateur.", tags: ['Community', 'GIFs', 'Web Rings'] },
+                { id: 'yahoo', year: '2000', title: 'The Consolidation', subtitle: 'Yahoo! Acquisition', description: "Yahoo! bought GeoCities for $3.6 billion. They immediately began 'optimizing.' The spatial metaphors (neighborhoods) were deemed inefficient and replaced with 'Usernames.' The distinct black and neon aesthetic was replaced by corporate white and purple. The soul was standardized.", tags: ['Corporate', 'Portal', 'Standardization'] },
+                { id: 'closure', year: '2009', title: 'The Demolition', subtitle: 'End of an Era', description: "On October 26, 2009, the servers were wiped. 38 million pages vanished. It was the burning of the digital Library of Alexandria. It marked the end of the 'Web 1.0' ethos—where you owned a plot of land—and the beginning of the 'Platform' era (Facebook, Twitter), where you just rent space in a feed.", tags: ['404', 'Digital Ruin', 'Loss'] }
+            ];
+
+            return (
+                <div className="font-ui">
+                    {/* Header */}
+                    <header className="pt-16 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                        <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors cursor-pointer flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left"></i> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-014</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                THE DIGITAL <br/>
+                                <span className="glitch-text text-unearth-primary">SUBURB</span>
+                            </h1>
+                            <p className="font-narrative text-unearth-secondary max-w-xl text-lg">
+                                Tracing the rise and demolition of the web's first neighborhoods.
+                            </p>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        {/* Left: Timeline */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Stratigraphic Layers
+                            </div>
+                            <EraSelector currentEra={currentEraIndex} eras={eras} setEra={setCurrentEraIndex} />
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2 flex items-center gap-2">
+                                    <i className="fa-solid fa-users"></i> PROVENANCE NOTES
+                                </div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed font-narrative">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-[10px] border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right: The Artifact */}
+                        <div className="lg:col-span-8 relative min-h-[500px]">
+                            {/* Browser Frame */}
+                            <div className="w-full h-[600px] bg-unearth-surface border border-unearth-border rounded-lg overflow-hidden shadow-xl flex flex-col relative">
+                                {/* Browser Chrome */}
+                                <div className="bg-unearth-border/50 p-2 flex items-center gap-2 text-xs font-sans text-unearth-main border-b border-unearth-border">
+                                    <div className="flex gap-1.5 mr-4">
+                                        <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                        <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                        <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                                    </div>
+                                    <div className="flex-1 bg-unearth-bg rounded px-2 py-0.5 overflow-hidden whitespace-nowrap text-unearth-secondary">
+                                        http://www.geocities.com/{eras[currentEraIndex].id === 'bhi' ? 'BHI/' : eras[currentEraIndex].id === 'classic' ? 'SiliconValley/Heights/7294' : 'myprofile'}
+                                    </div>
+                                </div>
+                                {/* Viewport */}
+                                <div className="flex-1 relative overflow-hidden bg-white">
+                                    <EraDisplay era={eras[currentEraIndex]} />
+                                </div>
+                            </div>
+                            {/* Decorative Address */}
+                            <div className="absolute -bottom-4 -right-4 text-right select-none pointer-events-none opacity-20">
+                                <div className="text-4xl font-bold text-unearth-main font-mono">11191</div>
+                                <div className="text-xs text-unearth-secondary uppercase tracking-widest">VISITOR COUNT</div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50 font-narrative">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

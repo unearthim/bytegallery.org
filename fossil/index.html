@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Clickable Fossil - An Interactive Excavation</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Lora:wght@400;600&family=Roboto:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. Component Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* --- ERA 1: The Gray Era (Windows 95 Style) --- */
+        /* This style is preserved as a historical artifact */
+        .btn-90s {
+            font-family: 'MS Sans Serif', sans-serif;
+            background-color: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            box-shadow: 1px 1px 0px black;
+            color: black;
+            padding: 6px 16px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            position: relative;
+            transition: none;
+            cursor: pointer;
+        }
+        .btn-90s:active {
+            border-top: 2px solid #000000;
+            border-left: 2px solid #000000;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            box-shadow: none;
+            transform: translate(1px, 1px);
+        }
+
+        /* --- ERA 2: Web 2.0 (Gloss/Aqua) --- */
+        /* This style is preserved as a historical artifact */
+        .btn-web2 {
+            background: linear-gradient(to bottom, #89c4f4 0%, #58a5f0 50%, #328ce0 51%, #1e6bc0 100%);
+            border: 1px solid #104a8e;
+            border-radius: 20px;
+            color: white;
+            font-family: 'Verdana', sans-serif;
+            font-weight: bold;
+            text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .btn-web2::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 5%; width: 90%; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 100%);
+            border-radius: 15px 15px 50px 50px / 15px 15px 10px 10px;
+            opacity: 0.6;
+        }
+        .btn-web2:hover { filter: brightness(1.1); }
+        .btn-web2:active { background: linear-gradient(to bottom, #1e6bc0 0%, #328ce0 100%); transform: translateY(1px); }
+
+        /* --- ERA 3: Material Design (Ripple) --- */
+        /* This style is preserved as a historical artifact */
+        .btn-material {
+            background-color: #BF5700; /* unearth-primary */
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+            transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        .btn-material:hover {
+            box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+        }
+        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+        /* --- ERA 4: Modern (Neumorphism/Glass) --- */
+        /* Updated to fit the new light theme */
+        .btn-modern {
+            background: #fcfaf5; /* unearth-bg */
+            border: 1px solid #e5e7eb; /* unearth-border */
+            border-radius: 16px;
+            color: #6b7280; /* unearth-secondary */
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            box-shadow: 
+                -5px -5px 10px #ffffff,
+                5px 5px 10px #d1d9e6;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-modern:hover {
+            color: #BF5700; /* unearth-primary */
+            box-shadow: 
+                -2px -2px 5px #ffffff,
+                2px 2px 5px #d1d9e6;
+        }
+        .btn-modern:active {
+            box-shadow: 
+                inset -2px -2px 5px #ffffff,
+                inset 2px 2px 5px #d1d9e6;
+        }
+
+        /* Glitch Text Effect for Title */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* Custom Tailwind Config */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+                'mono': ['Space Mono', 'monospace'],
+              }
+            }
+          }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Sub-Components ---
+
+        const Modal = ({ isOpen, onClose, type, content }) => {
+            if (!isOpen) return null;
+
+            // 90s Modal - style preserved as a historical artifact
+            if (type === '90s') {
+                return (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                        <div className="bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-black border-b-black p-1 shadow-xl w-80 select-none">
+                            <div className="bg-[#000080] text-white px-2 py-1 flex justify-between items-center font-bold text-sm mb-4">
+                                <span>System Message</span>
+                                <button onClick={onClose} className="bg-[#c0c0c0] text-black w-5 h-5 flex items-center justify-center border border-t-white border-l-white border-r-black border-b-black text-xs hover:bg-gray-400">X</button>
+                            </div>
+                            <div className="px-4 py-2 flex items-center gap-4">
+                                <div className="text-3xl">⚠️</div>
+                                <div className="text-black text-sm font-sans leading-tight">{content}</div>
+                            </div>
+                            <div className="flex justify-center mt-4 mb-2">
+                                <button onClick={onClose} className="btn-90s w-24">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Modern Modal - updated to new design system
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-unearth-main/80 backdrop-blur-sm transition-all duration-300 font-ui">
+                    <div className="bg-unearth-surface border border-unearth-border p-8 rounded-2xl max-w-md text-center shadow-2xl transform transition-all scale-100">
+                        <h3 className="text-xl font-bold mb-2 text-unearth-main">Interaction Logged</h3>
+                        <p className="text-unearth-secondary mb-6 font-narrative">{content}</p>
+                        <button onClick={onClose} className="bg-unearth-primary text-white px-6 py-2 text-sm rounded-md hover:opacity-90">
+                            Dismiss
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const EraSection = ({ era, onInteract }) => {
+            const [rippleStyle, setRippleStyle] = useState({});
+            const [showRipple, setShowRipple] = useState(false);
+
+            const handleMaterialClick = (e) => {
+                const rect = e.target.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                setRippleStyle({ width: size, height: size, top: y, left: x });
+                setShowRipple(true);
+                setTimeout(() => setShowRipple(false), 600);
+                onInteract(era.id, "Material ripple initialized.");
+            };
+
+            return (
+                <div className="min-h-[80vh] flex flex-col md:flex-row items-center justify-center gap-12 p-8 border-b border-unearth-border relative group">
+                    
+                    {/* Context/Description */}
+                    <div className="w-full md:w-1/3 text-left space-y-4 z-10">
+                        <div className="text-xs font-mono text-unearth-primary tracking-widest uppercase">Artifact #{era.id}</div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-unearth-main">{era.title}</h2>
+                        <div className="text-sm text-unearth-secondary font-mono">{era.years}</div>
+                        <p className="text-unearth-secondary leading-relaxed text-sm md:text-base font-narrative">{era.description}</p>
+                        <div className="flex gap-2 mt-4">
+                            {era.tags.map(tag => (
+                                <span key={tag} className="text-xs border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">{tag}</span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* The Artifact (Button) */}
+                    <div className="w-full md:w-1/3 flex items-center justify-center h-64 bg-unearth-surface rounded-lg border border-unearth-border relative p-8 shadow-sm">
+                        
+                        {era.id === '90s' && (
+                            <button 
+                                className="btn-90s" 
+                                onClick={() => onInteract(era.id, "Process executed. Welcome to the World Wide Web.")}
+                            >
+                                Click Me
+                            </button>
+                        )}
+
+                        {era.id === 'web2' && (
+                            <button 
+                                className="btn-web2 px-8 py-3 text-lg"
+                                onClick={() => onInteract(era.id, "Welcome to the Social Web.")}
+                            >
+                                Join Now!
+                            </button>
+                        )}
+
+                        {era.id === 'material' && (
+                            <button 
+                                className="btn-material px-8 py-3 text-sm"
+                                onClick={handleMaterialClick}
+                            >
+                                SUBMIT
+                                {showRipple && <span className="ripple" style={rippleStyle}></span>}
+                            </button>
+                        )}
+
+                        {era.id === 'modern' && (
+                            <button 
+                                className="btn-modern px-8 py-4 flex items-center gap-3"
+                                onClick={() => onInteract(era.id, "Haptic confirmation received.")}
+                            >
+                                <i className="fa-solid fa-fingerprint"></i>
+                                <span>Authenticate</span>
+                            </button>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main Application ---
+
+        function App() {
+            const [modal, setModal] = useState({ isOpen: false, type: '', content: '' });
+
+            const handleInteract = (eraId, message) => {
+                setModal({ isOpen: true, type: eraId, content: message });
+            };
+
+            const eras = [
+                {
+                    id: '90s',
+                    title: "The Structure",
+                    years: "1991 - 1999",
+                    description: "In the beginning, the button was honest. It mimicked the physical world purely through light and shadow logic—lighter top borders, darker bottom borders. It didn't ask for attention; it simply offered a function. This is the raw HTML <button>, unstyled and utilitarian.",
+                    tags: ["Bevel", "System Font", "Affordance"]
+                },
+                {
+                    id: 'web2',
+                    title: "The Skeuomorph",
+                    years: "2000 - 2012",
+                    description: "As bandwidth increased, so did our desire for tactile candy. We wanted screens to feel lickable. Buttons became glossy, gel-like, and reflective. They screamed 'Click me!' with gradients and heavy drop shadows, mimicking plastic and glass.",
+                    tags: ["Gradient", "Gloss", "Rounded"]
+                },
+                {
+                    id: 'material',
+                    title: "The Plane",
+                    years: "2013 - 2019",
+                    description: "Complexity became noise. We flattened the world into paper and ink. The 'Material' era stripped away the fake gloss but kept the physics. The button became a layer of paper floating above the surface, casting a realistic shadow. Interaction became a 'ripple' of energy.",
+                    tags: ["Flat", "Ripple", "Elevation"]
+                },
+                {
+                    id: 'modern',
+                    title: "The Organic",
+                    years: "2020 - Present",
+                    description: "We have transcended the screen. Buttons now feel like soft extrusions from the background, using light and shadow in a new, subtle way called 'Neumorphism'. They are context-aware, often relying on iconography and micro-interactions rather than text labels.",
+                    tags: ["Neumorphism", "Soft UI", "Haptic"]
+                }
+            ];
+
+            return (
+                <div className="font-ui">
+                    <Modal 
+                        isOpen={modal.isOpen} 
+                        onClose={() => setModal({ ...modal, isOpen: false })} 
+                        type={modal.type}
+                        content={modal.content}
+                    />
+
+                    {/* Header */}
+                    <header className="pt-24 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                         <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left"></i> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-001</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                THE CLICKABLE <br/>
+                                <span className="text-unearth-primary glitch-text">FOSSIL</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-narrative">
+                                An interactive excavation of the web's primary verb.
+                            </p>
+                        </div>
+                    </header>
+
+                    {/* Navigation hints */}
+                    <div className="sticky top-0 z-30 bg-unearth-bg/80 backdrop-blur-sm border-b border-unearth-border px-8 py-4 flex justify-between items-center text-xs font-mono uppercase tracking-widest text-unearth-secondary">
+                        <span>Scroll Down to Excavate</span>
+                        <span>Depth: {eras.length} Layers</span>
+                    </div>
+
+                    {/* Main Exhibition Area */}
+                    <main className="max-w-7xl mx-auto z-20 relative">
+                        {eras.map(era => (
+                            <EraSection key={era.id} era={era} onInteract={handleInteract} />
+                        ))}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50 font-narrative">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- 6. Render the App to the DOM ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Agitated Blink | Digital Archaeology</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 3. Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* Spotlight Effect (Kept for dark mode potential, but less visible on light bg) */
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            background: radial-gradient(600px circle at var(--x) var(--y), rgba(0,0,0,0.02), transparent 40%);
+            z-index: 1;
+        }
+
+        /* ERA 1: The Blink (1994) */
+        .blink-text {
+            animation: blink-animation 1s steps(2, start) infinite;
+        }
+        @keyframes blink-animation {
+            to { visibility: hidden; }
+        }
+        .era-1-container {
+            font-family: 'narrative', 'Times New Roman', serif;
+            background: #f9fafb; /* unearth-surface */
+            color: #1a1a1a; /* unearth-main */
+            padding: 20px;
+            border: 3px outset #fff;
+            image-rendering: pixelated;
+        }
+
+        /* ERA 2: The Marquee (1996) */
+        .era-2-container {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background: #1a1a1a; /* unearth-main */
+            color: #BF5700; /* unearth-primary */
+            padding: 20px;
+            overflow: hidden;
+            border: 2px solid #BF5700; /* unearth-primary */
+            position: relative;
+        }
+        .marquee-track {
+            white-space: nowrap;
+            position: absolute;
+            animation: marquee 10s linear infinite;
+        }
+        @keyframes marquee {
+            0% { left: 100%; }
+            100% { left: -100%; }
+        }
+
+        /* ERA 3: The Pop-Up (2002) */
+        .era-3-container {
+            font-family: 'Verdana', sans-serif;
+            background: #fcfaf5; /* unearth-bg */
+            position: relative; /* Keep relative for popups */
+            overflow: hidden;
+            border: 1px solid #999;
+        }
+        .popup-window {
+            background: #d4d0c8; /* Windows 98/2000 Grey */
+            border: 2px outset #fff;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+            position: absolute;
+            width: 200px;
+            animation: popup-bounce 0.3s ease-out;
+        }
+        .title-bar {
+            background: #BF5700; /* unearth-primary */
+            color: white;
+            padding: 2px 4px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        @keyframes popup-bounce {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ERA 4: The Badge (2010+) */
+        .era-4-container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb; /* unearth-surface */
+            color: #1a1a1a; /* unearth-main */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+        }
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: #BF5700; /* unearth-primary */
+            border-radius: 18px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #BF5700; /* unearth-primary */
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            height: 28px;
+            min-width: 28px;
+            padding: 0 6px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* unearth-surface */
+            border: 2px solid #f9fafb;
+            animation: badge-pulse 2s infinite;
+        }
+        @keyframes badge-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Glitch Text */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* Custom Tailwind Config via JS */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#f9fafb',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: { 'narrative': ['Lora', 'serif'], 'ui': ['Inter', 'sans-serif'], 'mono': ['Space Mono', 'monospace'] }
+            }
+          }
+        }
+    </style>
+</head>
+<body class="gallery-body">
+
+    <!-- 4. React Root -->
+    <div id="root"></div>
+
+    <!-- 5. React Component & Render Call -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- SUB-COMPONENTS ---
+
+        const EraDisplay = ({ era }) => {
+            // State for Popups (Era 3)
+            const [popups, setPopups] = useState([{ id: 1, x: 20, y: 20 }]);
+            const [score, setScore] = useState(0);
+
+            // State for Badge (Era 4)
+            const [notifications, setNotifications] = useState(1);
+
+            const handleAddPopup = () => {
+                const id = Date.now();
+                const x = Math.random() * 50 + 10;
+                const y = Math.random() * 50 + 10;
+                setPopups([...popups, { id, x, y }]);
+            };
+
+            const handleClosePopup = (id) => {
+                setPopups(popups.filter(p => p.id !== id));
+                setScore(score + 1);
+            };
+
+            // Era 1: The Blink
+            if (era.id === 'blink') {
+                return (
+                    <div className="era-1-container h-full flex flex-col items-center justify-center text-center relative">
+                        <div className="absolute top-0 left-0 w-full bg-unearth-main text-white text-xs p-1 text-left font-ui">
+                            Netscape Navigator 1.1
+                        </div>
+                        <h1 className="text-4xl font-bold mb-4">
+                            Welcome to <span className="blink-text text-unearth-primary">My Home Page!</span>
+                        </h1>
+                        <div className="border border-unearth-main p-4 bg-unearth-bg w-3/4">
+                            <p className="font-bold blink-text text-unearth-primary text-xl">
+                                ⚠ UNDER CONSTRUCTION ⚠
+                            </p>
+                            <p className="mt-2 text-sm">
+                                Please sign my <span className="text-unearth-primary underline blink-text">Guestbook!</span>
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 2: The Marquee
+            if (era.id === 'marquee') {
+                return (
+                    <div className="era-2-container h-full flex items-center justify-center">
+                        <div className="marquee-track text-2xl font-bold top-10">
+                            ★ WELCOME TO THE CYBERZONE ★ BEST VIEWED IN IE 4.0 ★ CLICK HERE TO ENTER ★
+                        </div> 
+                        <div className="text-center z-10 font-ui">
+                            <h2 className="text-4xl mb-4 text-unearth-bg drop-shadow-[2px_2px_0_#BF5700]">
+                                COOL SITE OF THE DAY
+                            </h2>
+                            <button className="bg-unearth-surface text-unearth-main border-2 border-unearth-border border-b-unearth-main border-r-unearth-main px-4 py-1 active:border-t-unearth-main active:border-l-unearth-main active:border-b-unearth-border active:border-r-unearth-border">
+                                ENTER
+                            </button>
+                        </div>
+                        <div className="marquee-track text-xl text-unearth-primary bottom-10" style={{ animationDirection: 'reverse', animationDuration: '8s' }}>
+                            VISITOR COUNT: 1,002,394 ... LAST UPDATED: 1998 ... NO HOTLINKING ...
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 3: The Pop-Up
+            if (era.id === 'popup') {
+                return (
+                    <div className="era-3-container h-full relative bg-slate-200">
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none font-ui">
+                            <div className="text-unearth-secondary font-bold text-4xl opacity-20">
+                                READING ARTICLE...
+                            </div> 
+                        </div>
+
+                        <button 
+                            onClick={handleAddPopup}
+                            className="absolute bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
+                        >
+                            Trigger Ad Script
+                        </button> 
+
+                        {popups.map((popup, i) => (
+                            <div 
+                                key={popup.id}
+                                className="popup-window"
+                                style={{ top: `${popup.y}%`, left: `${popup.x}%`, zIndex: i + 10 }}
+                            >
+                                <div className="title-bar">
+                                    <span>CONGRATULATIONS!</span>
+                                    <button 
+                                        onClick={() => handleClosePopup(popup.id)}
+                                        className="bg-unearth-border text-unearth-main w-4 h-4 flex items-center justify-center text-[10px] border border-unearth-surface border-b-unearth-main border-r-unearth-main leading-none"
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                                <div className="p-4 text-center text-unearth-main text-xs font-ui">
+                                    <h3 className="font-bold text-unearth-primary text-lg mb-2">YOU WON!</h3>
+                                    <p>Click here to claim your free iPod!</p>
+                                    <button className="mt-2 bg-unearth-border border border-unearth-main px-2 py-1">Claim</button>
+                                </div> 
+                            </div>
+                        ))}
+                        
+                        <div className="absolute top-2 left-2 text-xs font-mono text-gray-500">
+                            POPUPS BLOCKED: {score}
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 4: The Notification
+            if (era.id === 'notification') {
+                return (
+                    <div className="era-4-container h-full flex flex-col gap-8 font-ui">
+                        <div 
+                            className="app-icon cursor-pointer transition-transform active:scale-95"
+                            onClick={() => setNotifications(notifications + 1)}
+                        >
+                            <i className="fa-solid fa-bell text-4xl"></i>
+                            {notifications > 0 && (
+                                <div className="badge">
+                                    {notifications > 99 ? '99+' : notifications}
+                                </div>
+                            )}
+                        </div>
+                        <p className="text-unearth-secondary text-sm text-center max-w-xs">
+                            The agitation is no longer visual noise; it is psychological weight. <br/>
+                            <span className="text-xs text-unearth-secondary mt-2 block">
+                                (Click icon to feed the dopamine loop)
+                            </span>
+                        </p>
+
+                        <button 
+                            onClick={() => setNotifications(0)}
+                            className="text-xs text-blue-500 hover:underline"
+                        >
+                            Mark All as Read
+                        </button>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button
+                            key={era.id}
+                            onClick={() => setEra(index)}
+                            className={`
+                                group flex items-center gap-4 text-left transition-all duration-300
+                                ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 flex items-center justify-center rounded-full border font-mono text-xs
+                                transition-all duration-300
+                                ${currentEra === index
+                                    ? 'border-unearth-primary bg-unearth-primary/10 text-unearth-primary scale-110'
+                                    : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-primary/30'}
+                            `}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>
+                                    {era.title}
+                                </div>
+                                <div className="text-[10px] text-unearth-secondary uppercase tracking-wider">
+                                    {era.subtitle}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- MAIN APP ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+            const containerRef = useRef(null);
+
+            // Mouse spotlight
+            useEffect(() => {
+                const handleMouseMove = (e) => {
+                    if (containerRef.current) {
+                        containerRef.current.style.setProperty('--x', `${e.clientX}px`);
+                        containerRef.current.style.setProperty('--y', `${e.clientY}px`);
+                    }
+                };
+                window.addEventListener('mousemove', handleMouseMove);
+                return () => window.removeEventListener('mousemove', handleMouseMove);
+            }, []);
+
+            const eras = [
+                {
+                    id: 'blink',
+                    year: '1994',
+                    title: 'The Blink Tag',
+                    subtitle: 'Netscape Navigator 1.1',
+                    description: "It started as a joke by a Netscape engineer. It became the most hated tag in HTML history. The <blink> tag was the web's first attempt to scream. It was a binary shout: look at me, look away, look at me. It had no settings. It just blinked.",
+                    tags: ['<blink>', 'Visual Noise', 'Netscape']
+                },
+                {
+                    id: 'marquee',
+                    year: '1996',
+                    title: 'The Marquee',
+                    subtitle: 'Microsoft IE 3.0',
+                    description: "Microsoft's answer to <blink> was <marquee>. It turned the browser into a stock ticker or a Times Square billboard. It introduced motion to the static page. While annoying, it was the ancestor of the news ticker and the CSS animation.",
+                    tags: ['<marquee>', 'Scrolling', 'Ticker']
+                },
+                {
+                    id: 'popup',
+                    year: '2002',
+                    title: 'The Pop-Up',
+                    subtitle: 'window.open()',
+                    description: "Attention weaponized. Advertisers realized they could spawn new windows outside your control. The 'Pop-Up' broke the contract of the browser window. It led to the first 'Pop-Up Blockers'—the first time users installed software specifically to defend themselves against the web.",
+                    tags: ['JavaScript', 'Ads', 'Hostile Design']
+                },
+                {
+                    id: 'notification',
+                    year: '2010',
+                    title: 'The Badge',
+                    subtitle: 'Psychological Red',
+                    description: "We traded visual chaos for psychological anxiety. The red notification badge uses color psychology to trigger a dopamine loop. It doesn't scream; it whispers that you are missing out. It is the most refined and dangerous form of the attention economy.",
+                    tags: ['UI Pattern', 'Dopamine', 'Dark Pattern']
+                }
+            ];
+
+            return (
+                <div className="gallery-body font-ui" ref={containerRef}>
+                    <div className="spotlight"></div>
+
+                    {/* Header */}
+                    <header className="pt-16 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                        <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors cursor-pointer flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left text-sm"></i> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-004</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                THE AGITATED <br/>
+                                <span className="glitch-text text-unearth-primary">&lt;BLINK&gt;</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-narrative">
+                                A history of visual noise and user hostility.
+                            </p>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+                        {/* Left: Timeline */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Escalation Levels
+                            </div>
+                            <EraSelector 
+                                currentEra={currentEraIndex} 
+                                eras={eras} 
+                                setEra={setCurrentEraIndex} 
+                            /> 
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2 flex items-center gap-2">
+                                    <i className="fa-solid fa-triangle-exclamation text-xs"></i> CURATOR'S NOTE
+                                </div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed font-narrative">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-[10px] border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div> 
+                        </div> 
+                        {/* Right: The Artifact */}
+                        <div className="lg:col-span-8 relative min-h-[500px]">
+
+                            {/* Monitor Frame */}
+                            <div className="w-full h-full bg-unearth-main border border-unearth-border rounded-lg overflow-hidden shadow-2xl flex flex-col relative">
+                                {/* Screen Glare */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none z-20"></div>
+
+                                {/* Viewport */}
+                                <div className="flex-1 relative overflow-hidden">
+                                    <EraDisplay era={eras[currentEraIndex]} />
+                                </div>
+                            </div>
+                            {/* Decorative HTML */}
+                            <div className="absolute -bottom-4 -right-4 text-[80px] font-mono text-unearth-main/5 select-none pointer-events-none">
+                                &lt;/&gt;
+                            </div>
+                        </div>
+
+                    </main>
+
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 text-unearth-secondary/50 font-narrative">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- 6. Render the App ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

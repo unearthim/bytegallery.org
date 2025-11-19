@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue & Underlined - The Digital Thread</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Lora:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 3. Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* --- ERA 1: The Default (1993) --- */
+        /* Historical styles are preserved */
+        .era-1-container {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #c0c0c0;
+            color: #000000;
+            padding: 20px;
+            border: 2px solid #808080;
+            box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #000000;
+        }
+        .link-classic { color: #0000EE; text-decoration: underline; cursor: pointer; }
+        .link-classic:active { color: #FF0000; }
+        .link-classic.visited { color: #551A8B; }
+
+        /* --- ERA 2: The Rollover (1999) --- */
+        .era-2-container {
+            font-family: 'Verdana', sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            padding: 20px;
+            border: 1px solid #cccccc;
+        }
+        .nav-bar { background: #efefef; border-bottom: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }
+        .link-hover { color: #003366; text-decoration: none; font-weight: bold; font-size: 12px; padding: 5px 10px; transition: all 0.2s; border-right: 1px solid #ccc; }
+        .link-hover:hover { background-color: #003366; color: #ffffff; text-decoration: none; }
+
+        /* --- ERA 3: The CTA (2011) --- */
+        .era-3-container {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #444;
+            padding: 40px;
+            text-align: center;
+        }
+        .link-button {
+            display: inline-block;
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 0 #219150;
+            transition: all 0.1s;
+            margin-top: 20px;
+        }
+        .link-button:active { transform: translateY(4px); box-shadow: 0 0 0 #219150; }
+
+        /* --- ERA 4: The Contextual (2024) --- */
+        .era-4-container {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* unearth-surface */
+            color: #1a1a1a; /* unearth-main */
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e5e7eb; /* unearth-border */
+            border-radius: 12px;
+        }
+        .link-invisible {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            padding-bottom: 1px;
+        }
+        .link-invisible:hover {
+            border-color: #BF5700; /* unearth-primary */
+            color: #BF5700;
+            background: rgba(191, 87, 0, 0.05);
+        }
+
+        /* Glitch Effect */
+        .glitch-text:hover { animation: glitch-anim 0.3s infinite; }
+        @keyframes glitch-anim { 0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) } 40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) } }
+        
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Custom Tailwind Config */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+                'mono': ['Space Mono', 'monospace'],
+              }
+            }
+          }
+        }
+    </style>
+</head>
+<body class="gallery-body">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- SUB-COMPONENTS ---
+
+        const EraDisplay = ({ era, visitedLinks, onLinkClick }) => {
+            // Era 1: The Default (Mosaic/Netscape)
+            if (era.id === 'default') {
+                const isVisited = visitedLinks.includes('classic');
+                return (
+                    <div className="era-1-container h-full flex flex-col justify-center items-start fade-in relative">
+                        <div className="absolute top-0 left-0 bg-[#000080] text-white text-xs px-2 py-1 w-full font-sans">
+                            Netscape Navigator 1.0
+                        </div>
+                        <div className="mt-6">
+                            <h1 className="text-xl font-bold mb-4">The World Wide Web</h1>
+                            <p className="leading-relaxed mb-4">
+                                Welcome to the information superhighway. 
+                                Please click the <span 
+                                    className={`link-classic ${isVisited ? 'visited' : ''}`}
+                                    onClick={() => onLinkClick('classic')}
+                                >
+                                    hyperlink
+                                </span> to proceed to the next directory.
+                            </p>
+                            <ul className="list-disc pl-6">
+                                <li><span className="link-classic">Gopher Services</span></li>
+                                <li><span className="link-classic">FTP Archives</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 2: The Hover (CSS / Web 1.5)
+            if (era.id === 'hover') {
+                return (
+                    <div className="era-2-container h-full fade-in">
+                        <div className="nav-bar flex">
+                            <a href="#" className="link-hover" onClick={(e) => e.preventDefault()}>Home</a>
+                            <a href="#" className="link-hover" onClick={(e) => e.preventDefault()}>Products</a>
+                            <a href="#" className="link-hover" onClick={(e) => { e.preventDefault(); onLinkClick('hover'); }}>
+                                Click Me
+                            </a>
+                            <a href="#" className="link-hover" onClick={(e) => e.preventDefault()}>Guestbook</a>
+                        </div>
+                        <h2 className="text-lg font-bold text-[#003366] mb-2">Welcome to My Homepage</h2>
+                        <p className="text-xs leading-normal">
+                            We have removed the underlines to make the web look more like a magazine. 
+                            Hover over the navigation bar to see the rollovers!
+                        </p>
+                        <div className="mt-8 text-[10px] text-center text-gray-500">
+                            Best viewed in Internet Explorer 5.0
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 3: The Button (Flat Design)
+            if (era.id === 'button') {
+                return (
+                    <div className="era-3-container h-full flex flex-col justify-center items-center fade-in">
+                        <h1 className="text-3xl font-bold text-[#2c3e50] mb-2">Do The Thing.</h1>
+                        <p className="text-gray-500 mb-6 text-sm">
+                            The link is no longer inline text. It is an object. It is a "Call to Action."
+                        </p>
+                        <a href="#" className="link-button" onClick={(e) => { e.preventDefault(); onLinkClick('button'); }}>
+                            Get Started
+                        </a>
+                    </div>
+                );
+            }
+
+            // Era 4: The Contextual (Modern)
+            if (era.id === 'modern') {
+                return (
+                    <div className="era-4-container h-full flex flex-col justify-center fade-in">
+                        <div className="text-2xl font-light tracking-tight leading-relaxed text-unearth-secondary">
+                            The interface has dissolved. <br/>
+                            We no longer need explicit instruction. <br/>
+                            We explore through <a href="#" className="link-invisible" onClick={(e) => { e.preventDefault(); onLinkClick('modern'); }}>intuition</a> and context.
+                        </div>
+                        <div className="mt-8 flex gap-4">
+                            <div className="w-8 h-8 rounded-full bg-unearth-border animate-pulse"></div>
+                            <div className="w-32 h-8 rounded bg-unearth-border/50"></div>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button
+                            key={era.id}
+                            onClick={() => setEra(index)}
+                            className={`
+                                group flex items-center gap-4 text-left transition-all duration-300
+                                ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-60 hover:opacity-100'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 flex items-center justify-center rounded-full border 
+                                transition-all duration-300 font-mono text-xs
+                                ${currentEra === index 
+                                    ? 'border-unearth-primary bg-unearth-primary/10 text-unearth-primary scale-110' 
+                                    : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-primary/30'}
+                            `}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>
+                                    {era.title}
+                                </div>
+                                <div className="text-[10px] text-unearth-secondary/80 uppercase tracking-wider">
+                                    {era.subtitle}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- MAIN APP ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+            const [visitedLinks, setVisitedLinks] = useState([]);
+            const [clickCount, setClickCount] = useState(0);
+
+            const handleLinkClick = (type) => {
+                if (!visitedLinks.includes(type)) {
+                    setVisitedLinks([...visitedLinks, type]);
+                }
+                setClickCount(prev => prev + 1);
+            };
+
+            const eras = [
+                {
+                    id: 'default',
+                    year: '1993',
+                    title: 'The Default',
+                    subtitle: 'Mosaic Blue #0000EE',
+                    description: "The first hyperlinks were purely utilitarian. Blue was chosen because it was the darkest color in the standard 16-color palette that wasn't black, distinguishing it from text while remaining readable. The underline was a necessity for accessibility on monochrome screens. It also introduced the concept of 'Visited' state (#551A8B), a map of where you had been.",
+                    tags: ['#0000EE', 'Times New Roman', 'Underline']
+                },
+                {
+                    id: 'hover',
+                    year: '1999',
+                    title: 'The Rollover',
+                    subtitle: 'CSS & The Navbar',
+                    description: "As CSS matured, designers rebelled against the ugly underline. We entered the era of the 'Navbar.' Links began to behave like software menus. The :hover pseudo-class gave us the first taste of interaction before the click. The web started to feel less like a document and more like an application.",
+                    tags: ['text-decoration: none', ':hover', 'Verdana']
+                },
+                {
+                    id: 'button',
+                    year: '2011',
+                    title: 'The Button',
+                    subtitle: 'Flat Design & CTA',
+                    description: "With the rise of mobile and touch, text links became hard to tap. The link evolved into the 'Button.' We stopped asking users to 'read more' and started commanding them to 'Sign Up' or 'Buy Now.' Links became colorful blocks of geometry, stripped of gradients and shadows (Flat Design).",
+                    tags: ['Padding', 'Block', 'Touch Target']
+                },
+                {
+                    id: 'modern',
+                    year: '2024',
+                    title: 'The Contextual',
+                    subtitle: 'Invisible Interfaces',
+                    description: "Today, the link has dissolved into the environment. We assume interactivity. Cards, images, and whole containers are clickable. Text links use subtle cues—color shifts, custom underlines, or simply context. The blue is gone, replaced by brand colors or high-contrast modes.",
+                    tags: ['Pointer Events', 'Cards', 'Motion']
+                }
+            ];
+
+            return (
+                <div className="font-ui">
+                    {/* Header */}
+                    <header className="pt-16 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                        <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                            <a href="../" className="hover:text-unearth-main transition-colors cursor-pointer flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left text-xs"></i> Gallery Index
+                            </a>
+                            <span className="text-unearth-secondary">/</span>
+                            <span className="text-unearth-secondary">ART-003</span>
+                        </div>
+                        <div className="border-l-2 border-[#0000EE] pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                BLUE & <br/>
+                                <span style={{ textDecoration: 'underline', textDecorationColor: '#0000EE', textDecorationThickness: '4px' }} className="glitch-text">UNDERLINED</span>
+                            </h1>
+                            <p className="font-narrative text-unearth-secondary max-w-xl text-lg">
+                                Tracing the evolution of the digital thread.
+                            </p>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        
+                        {/* Left: Timeline Navigation */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Chronological Strata
+                            </div>
+                            <EraSelector 
+                                currentEra={currentEraIndex} 
+                                eras={eras} 
+                                setEra={setCurrentEraIndex} 
+                            />
+                            
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2">CURATOR'S NOTE</div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed font-narrative">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-[10px] border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right: The Artifact (Interactive Playground) */}
+                        <div className="lg:col-span-8 relative min-h-[500px]">
+                            <div className="absolute top-0 right-0 text-xs font-mono text-unearth-secondary/70">
+                                INTERACTIONS_LOGGED: {clickCount.toString().padStart(4, '0')}
+                            </div>
+                            
+                            {/* Browser Window Frame */}
+                            <div className="w-full h-full bg-unearth-surface border border-unearth-border rounded-lg overflow-hidden shadow-xl flex flex-col">
+                                {/* Browser Bar */}
+                                <div className="bg-unearth-border/50 p-3 flex items-center gap-3 border-b border-unearth-border">
+                                    <div className="flex gap-1.5">
+                                        <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                        <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                        <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                                    </div>
+                                    <div className="flex-1 bg-unearth-bg rounded px-3 py-1 text-xs font-mono text-unearth-secondary flex items-center gap-2">
+                                        <i className="fa-solid fa-globe text-xs"></i>
+                                        <span>http://www.web-history.im/{eras[currentEraIndex].year}</span>
+                                    </div>
+                                </div>
+                                
+                                {/* Content Area */}
+                                <div className="flex-1 p-8 relative">
+                                    <EraDisplay 
+                                        era={eras[currentEraIndex]} 
+                                        visitedLinks={visitedLinks}
+                                        onLinkClick={handleLinkClick}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Decorative Elements */}
+                            <div className="absolute -bottom-4 -right-4 text-[100px] font-serif text-unearth-main/5 select-none pointer-events-none">
+                                &lt;a&gt;
+                            </div>
+                        </div>
+
+                    </main>
+
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50 font-narrative">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- 6. Render the App ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+
+</body>
+</html>

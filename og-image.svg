@@ -1,0 +1,36 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#fcfaf5"/>
+
+  <!-- Fonts -->
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Lora:wght@600&family=Inter:wght@400&display=swap');
+    </style>
+  </defs>
+
+  <!-- Main Title -->
+  <text x="100" y="280" font-family="'Lora', serif" font-size="90" font-weight="600" fill="#1a1a1a">
+    The Byte Gallery
+  </text>
+
+  <!-- Separator Line -->
+  <rect x="100" y="330" width="150" height="5" fill="#BF5700"/>
+
+  <!-- Subtitle -->
+  <text x="100" y="390" font-family="'Inter', sans-serif" font-size="32" fill="#6b7280">
+    An interactive museum of digital artifacts.
+  </text>
+  <text x="100" y="435" font-family="'Inter', sans-serif" font-size="32" fill="#6b7280">
+    Excavating the fossils of the web.
+  </text>
+
+  <!-- Footer / Attribution -->
+  <g transform="translate(100 550)">
+    <rect width="40" height="40" fill="#BF5700" rx="4"/>
+    <text x="12" y="29" font-family="'Inter', sans-serif" font-size="24" font-weight="700" fill="#ffffff">u</text>
+    <text x="55" y="27" font-family="'Inter', sans-serif" font-size="20" fill="#6b7280">
+      An <tspan font-weight="600" fill="#1a1a1a">unearth.im</tspan> Project
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Eternal Spinner | Digital Archaeology Exhibition</title>
+    <meta name="description" content="An interactive art exhibition exploring the history of web loading states, from the dial-up handshake to modern skeleton screens. Curated by unearth.im.">
+    <meta name="author" content="unearth.im">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* ERA 1: The Handshake (Dial-up) */
+        .font-modem { font-family: 'VT323', monospace; }
+        .blink-cursor { animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ERA 2: The Block (Windows 98) */
+        .progress-win98 {
+            background: #f9fafb; /* unearth-surface */
+            border: 1px solid #e5e7eb; /* unearth-border */
+            padding: 4px;
+        }
+        .block {
+            background: #BF5700; /* unearth-primary */
+        }
+
+        /* ERA 3: The Throbber (Web 2.0) */
+        .spinner-ios {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            animation: spin 1s linear infinite;
+        }
+        .bar-ios {
+            width: 3px;
+            height: 10px;
+            background: #6b7280; /* unearth-secondary */
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform-origin: 0 20px;
+            border-radius: 2px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ERA 4: The Ghost (Skeleton) */
+        .skeleton-shimmer {
+            background: #e5e7eb; /* unearth-border */
+            background-image: linear-gradient(to right, #e5e7eb 0%, #f9fafb 20%, #e5e7eb 40%, #e5e7eb 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear forwards;
+        }
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+
+        /* Glitch Effect for Title */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* Custom Tailwind Config */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+                'mono': ['Space Mono', 'monospace'],
+              }
+            }
+          }
+        }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    const { useState, useEffect, useRef } = React;
+
+    // --- COMPONENTS ---
+
+    // Era 1: The Modem (Text Ticker)
+    const ModemLoader = ({ onComplete }) => {
+        const [lines, setLines] = useState([]);
+        
+        useEffect(() => {
+            const sequence = [
+                "Dialing 555-0199...",
+                "Handshake initiated...",
+                "Verifying username...",
+                "Connection established at 28.8 kbps.",
+                "Downloading header information...",
+                "Rendering..."
+            ];
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < sequence.length) {
+                    setLines(prev => [...prev, sequence[i]]);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(onComplete, 1000);
+                }
+            }, 800);
+
+            return () => clearInterval(interval);
+        }, []);
+
+        return (
+            <div className="font-modem text-green-400 text-lg w-full max-w-md p-4 bg-unearth-main border border-unearth-primary/20 rounded shadow-lg">
+                {lines.map((line, idx) => (
+                    <div key={idx}>{line}</div>
+                ))}
+                <div className="mt-2"><span className="blink-cursor">_</span></div>
+            </div>
+        );
+    };
+
+    // Era 2: The Block (Windows Progress)
+    const BlockLoader = ({ onComplete }) => {
+        const [blocks, setBlocks] = useState(0);
+        
+        useEffect(() => {
+            const interval = setInterval(() => {
+                setBlocks(prev => {
+                    if (prev === 15 && Math.random() > 0.8) return prev; // Stall
+                    if (prev >= 20) {
+                        clearInterval(interval);
+                        setTimeout(onComplete, 500);
+                        return 20;
+                    }
+                    return prev + 1;
+                });
+            }, 150);
+            return () => clearInterval(interval);
+        }, []);
+
+        return (
+            <div className="w-full max-w-md bg-unearth-surface p-2 border border-unearth-border rounded">
+                <div className="flex justify-between text-unearth-main text-xs mb-1 font-ui">
+                    <span>Copying...</span>
+                    <span>{Math.min(blocks * 5, 99)}%</span>
+                </div>
+                <div className="h-6 bg-unearth-bg border border-unearth-border p-1 flex gap-px">
+                    {Array.from({ length: blocks }).map((_, i) => (
+                        <div key={i} className="h-full w-3 block"></div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    // Era 3: The Throbber (Spinner)
+    const SpinnerLoader = ({ onComplete }) => {
+        useEffect(() => {
+            const timer = setTimeout(onComplete, 3000);
+            return () => clearTimeout(timer);
+        }, []);
+
+        return (
+            <div className="flex flex-col items-center gap-4">
+                <div className="spinner-ios">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                        <div 
+                            key={i} 
+                            className="bar-ios" 
+                            style={{ 
+                                transform: `rotate(${i * 30}deg) translate(0, -150%)`, 
+                                opacity: 1 - (i / 12) 
+                            }}
+                        ></div>
+                    ))}
+                </div>
+                <span className="text-unearth-secondary text-sm font-ui tracking-wide animate-pulse">Loading assets...</span>
+            </div>
+        );
+    };
+
+    // Era 4: The Ghost (Skeleton)
+    const SkeletonLoader = ({ onComplete }) => {
+        useEffect(() => {
+            const timer = setTimeout(onComplete, 2500);
+            return () => clearTimeout(timer);
+        }, []);
+
+        return (
+            <div className="w-full max-w-md bg-unearth-surface p-4 rounded-xl border border-unearth-border shadow-lg">
+                <div className="flex gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-full skeleton-shimmer flex-shrink-0"></div>
+                    <div className="flex-1 space-y-2 py-1">
+                        <div className="h-4 skeleton-shimmer rounded w-3/4"></div>
+                        <div className="h-4 skeleton-shimmer rounded w-1/2"></div>
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <div className="h-24 skeleton-shimmer rounded w-full"></div>
+                    <div className="h-4 skeleton-shimmer rounded w-full"></div>
+                </div>
+            </div>
+        );
+    };
+
+    // The Interactive Section
+    const EraSection = ({ era }) => {
+        const [status, setStatus] = useState('idle'); // idle, loading, complete
+
+        const startLoading = () => setStatus('loading');
+        const completeLoading = () => setStatus('complete');
+        const reset = () => setStatus('idle');
+
+        return (
+            <div className="min-h-[80vh] flex flex-col md:flex-row items-center justify-center gap-12 p-8 border-b border-unearth-border relative group">
+                
+                {/* Text Context */}
+                <div className="w-full md:w-1/3 text-left space-y-4 z-10">
+                    <div className="text-xs font-mono text-unearth-primary tracking-widest uppercase">Artifact #{era.id}</div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-unearth-main">{era.title}</h2>
+                    <div className="text-sm text-unearth-secondary font-mono">{era.years}</div>
+                    <p className="text-unearth-secondary leading-relaxed text-sm md:text-base font-narrative">{era.description}</p>
+                    <div className="flex gap-2 mt-4">
+                        {era.tags.map(tag => (
+                            <span key={tag} className="text-xs border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">{tag}</span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* The Interactive Loader */}
+                <div className="w-full md:w-1/3 flex flex-col items-center justify-center h-64 bg-unearth-surface rounded-lg border border-unearth-border relative p-8 shadow-sm">
+                    
+                    {status === 'idle' && (
+                        <button 
+                            onClick={startLoading}
+                            className="group relative px-6 py-3 font-mono text-xs uppercase tracking-widest text-unearth-secondary border border-unearth-border hover:bg-unearth-main hover:text-unearth-bg transition-all duration-300"
+                        >
+                            Initiate Sequence
+                        </button>
+                    )}
+
+                    {status === 'loading' && (
+                        <>
+                            {era.id === 'modem' && <ModemLoader onComplete={completeLoading} />}
+                            {era.id === 'block' && <BlockLoader onComplete={completeLoading} />}
+                            {era.id === 'spinner' && <SpinnerLoader onComplete={completeLoading} />}
+                            {era.id === 'ghost' && <SkeletonLoader onComplete={completeLoading} />}
+                        </>
+                    )}
+
+                    {status === 'complete' && (
+                        <div className="text-center animate-fade-in">
+                            <div className="text-green-500 text-4xl mb-2"><i className="fa-solid fa-check"></i></div>
+                            <div className="text-unearth-main font-bold text-lg">Content Loaded</div>
+                            <div className="text-unearth-secondary text-xs mt-1 font-mono mb-4">
+                                Latency: {era.latency}
+                            </div>
+                            <button onClick={reset} className="text-xs text-unearth-secondary/70 hover:text-unearth-main underline">Reset</button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    const App = () => {
+        const eras = [
+            {
+                id: 'modem',
+                title: "The Handshake",
+                years: "1993 - 1999",
+                description: "Before the visual web, waiting was auditory. The 'screech' of the modem was the first loading bar. Once connected, loading was a line-by-line reveal. You didn't wait for the whole page; you read what had arrived while waiting for the footer.",
+                tags: ["28.8k", "Text Stream", "Auditory"],
+                latency: "High (Sound Required)"
+            },
+            {
+                id: 'block',
+                title: "The Determinate Block",
+                years: "1998 - 2006",
+                description: "Software became heavier. We needed to know 'how much longer?' The segmented progress bar (standardized by Windows 95) gave us a false sense of control. The famous 'stall at 99%' taught a generation about the non-linearity of computer time.",
+                tags: ["Segments", "Estimation", "Stall"]
+            },
+            {
+                id: 'spinner',
+                title: "The Indeterminate Throbber",
+                years: "2007 - 2014",
+                description: "With AJAX and the iPhone, the web became fluid. We stopped reloading pages and started fetching data in the background. The 'spinner' admitted: 'We don't know how long this will take, but we are working on it.'",
+                tags: ["AJAX", "Infinite", "Circular"]
+            },
+            {
+                id: 'ghost',
+                title: "The Skeleton Screen",
+                years: "2015 - Present",
+                description: "Psychology took over. Instead of a spinner (which focuses attention on the wait), we now show a gray 'ghost' of the content. It makes the page feel faster by showing layout instantly, shifting focus from 'waiting' to 'anticipating.'",
+                tags: ["Perception", "Shimmer", "UI Shell"]
+            }
+        ];
+
+        return (
+            <div className="min-h-screen pb-20 font-ui">
+                
+                {/* Header */}
+                <header className="pt-24 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                    <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                         <a href="../" className="hover:text-unearth-main transition-colors flex items-center gap-2">
+                            <i className="fa-solid fa-arrow-left"></i> Gallery Index
+                         </a>
+                         <span className="text-unearth-secondary">/</span>
+                         <span className="text-unearth-secondary">ART-002</span>
+                    </div>
+                    <div className="border-l-2 border-unearth-primary pl-6">
+                        <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                            THE ETERNAL <br/>
+                            <span className="text-unearth-primary glitch-text">SPINNER</span>
+                        </h1>
+                        <p className="text-unearth-secondary max-w-xl text-lg font-narrative">
+                            An exhibition on the architecture of patience.
+                        </p>
+                    </div>
+                </header>
+
+                <div className="sticky top-0 z-30 bg-unearth-bg/80 backdrop-blur-sm border-b border-unearth-border px-8 py-4 flex justify-between items-center text-xs font-mono uppercase tracking-widest text-unearth-secondary">
+                    <span>Artifacts Loaded</span>
+                    <span>4 / 4</span>
+                </div>
+
+                <main className="max-w-7xl mx-auto z-20 relative">
+                    {eras.map(era => (
+                        <EraSection key={era.id} era={era} />
+                    ))}
+                </main>
+
+                <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                    <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                    <p className="mt-2 opacity-50 font-narrative">Provenance: unearth.im</p>
+                </footer>
+            </div>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+
+</body>
+</html>
