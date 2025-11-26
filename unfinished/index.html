@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- === Primary Meta Tags === -->
+    <title>ART-009: The Unfinished Web | The Byte Gallery</title>
+    <meta name="title" content="ART-009: The Unfinished Web | The Byte Gallery">
+    <meta name="description" content="A tribute to the chaotic creativity of Geocities. Shoveling GIFs, spinning email icons, and the 'Work in Progress' mindset.">
+    <meta name="keywords" content="Geocities, Under Construction, Web 1.0, GIFs, 1990s Web, Digital Archaeology, Byte Gallery, unearth.im">
+    <meta name="author" content="bytegallery.org (An unearth.im Project)">
+    <link rel="canonical" href="https://bytegallery.org/unfinished/" />
+
+    <!-- === Open Graph === -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://bytegallery.org/unfinished/">
+    <meta property="og:title" content="ART-009: The Unfinished Web">
+    <meta property="og:description" content="A tribute to the chaotic creativity of Geocities. Shoveling GIFs, spinning email icons, and the 'Work in Progress' mindset.">
+    <meta property="og:image" content="https://bytegallery.org/og-image.png">
+
+    <!-- === Twitter Card === -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bytegallery.org/unfinished/">
+    <meta property="twitter:title" content="ART-009: The Unfinished Web">
+    <meta property="twitter:description" content="Shoveling GIFs, spinning email icons, and the 'Work in Progress' mindset that defined the chaotic creativity of early web culture.">
+    <meta property="twitter:image" content="https://bytegallery.org/og-image.png">
+
+    <!-- === Fonts === -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fcfaf5;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 60px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 40px;
+        }
+
+        .accession {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #BF5700;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .metadata {
+            display: flex;
+            gap: 30px;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 20px;
+        }
+
+        .metadata span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Interactive Construction Zone */
+        .construction-zone {
+            background: repeating-linear-gradient(
+                45deg,
+                #ffeb3b,
+                #ffeb3b 10px,
+                #000000 10px,
+                #000000 20px
+            );
+            border: 4px solid #000000;
+            padding: 6px;
+            margin: 40px 0;
+        }
+
+        .construction-inner {
+            background: #fcfaf5;
+            padding: 40px;
+            border: 2px dashed #000000;
+        }
+
+        .construction-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .construction-gif-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .construction-gif {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            border: 3px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .construction-gif:nth-child(2) {
+            animation-delay: 0.2s;
+            background: linear-gradient(135deg, #ffd93d, #6bcf7f);
+        }
+
+        .construction-gif:nth-child(3) {
+            animation-delay: 0.4s;
+            background: linear-gradient(135deg, #6bcf7f, #4d96ff);
+        }
+
+        .construction-text {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff0000;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .construction-message {
+            text-align: center;
+            font-family: 'Comic Sans MS', cursive;
+            color: #1a1a1a;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .gif-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .gif-item {
+            aspect-ratio: 1;
+            background: #f3f4f6;
+            border: 3px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gif-item:hover {
+            transform: scale(1.05);
+            border-color: #BF5700;
+            z-index: 10;
+        }
+
+        /* Specific GIF animations */
+        .gif-item.email {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .gif-item.flame {
+            animation: flicker 0.5s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { filter: brightness(1) hue-rotate(0deg); }
+            50% { filter: brightness(1.5) hue-rotate(20deg); }
+        }
+
+        .gif-item.sparkle {
+            animation: sparkle 1s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(5deg); }
+            50% { transform: scale(1) rotate(0deg); }
+            75% { transform: scale(1.2) rotate(-5deg); }
+        }
+
+        .gif-item.arrow {
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .gif-item.new {
+            animation: pulse 1s infinite;
+            background: radial-gradient(circle, #ff0000, #ffeb3b);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .gif-item.visitor {
+            animation: march 3s linear infinite;
+        }
+
+        @keyframes march {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+
+        /* Content Sections */
+        .section {
+            margin: 60px 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            border-left: 4px solid #BF5700;
+            padding-left: 20px;
+        }
+
+        p {
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 20px;
+        }
+
+        .example-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+
+        .code {
+            background: #1a1a1a;
+            color: #10b981;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #BF5700, #e5e7eb);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -46px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: #BF5700;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px #fcfaf5;
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            color: #BF5700;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content {
+            font-family: 'Lora', serif;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        /* Quote Box */
+        .quote-box {
+            background: linear-gradient(135deg, #ffeb3b15, #ff6b6b15);
+            border-left: 4px solid #ffeb3b;
+            padding: 20px 25px;
+            margin: 30px 0;
+            font-family: 'Lora', serif;
+            font-style: italic;
+            color: #374151;
+        }
+
+        /* GIF Legend */
+        .gif-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .legend-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e5e7eb;
+            border-radius: 4px;
+        }
+
+        .legend-text {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        /* Footer Nav */
+        .footer-nav {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 2px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #BF5700;
+            text-decoration: none;
+            font-weight: 600;
+            transition: gap 0.3s ease;
+        }
+
+        .back-link:hover {
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 40px 15px; }
+            .metadata { flex-direction: column; gap: 10px; }
+            .gif-gallery { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <span class="accession">ART-009 // ARCHAEOBYTOLOGY.ORG</span>
+            <h1>The Unfinished Web</h1>
+            <p class="subtitle">A tribute to the chaotic creativity of Geocities, shoveling GIFs, and the "Work in Progress" mindset</p>
+            <div class="metadata">
+                <span><i class="fa-solid fa-calendar"></i> Era: 1995 - 2001</span>
+                <span><i class="fa-solid fa-layer-group"></i> Medium: HTML, GIF</span>
+                <span><i class="fa-solid fa-screwdriver-wrench"></i> Status: Forever Under Construction</span>
+            </div>
+        </div>
+
+        <!-- Interactive Construction Zone -->
+        <div class="construction-zone">
+            <div class="construction-inner">
+                <div class="construction-header">
+                    <div class="construction-gif-container">
+                        <div class="construction-gif">🚧</div>
+                        <div class="construction-gif">👷</div>
+                        <div class="construction-gif">⚠️</div>
+                    </div>
+                    <div class="construction-text">*** Under Construction ***</div>
+                    <div class="construction-message">
+                        🌟 Welcome to my homepage! 🌟<br>
+                        This site is still being built! Check back soon for more cool stuff!!!<br>
+                        <marquee style="margin-top: 10px; color: #BF5700; font-weight: bold;">
+                            LAST UPDATED: 07/15/1999 | COME BACK SOON!!! | BEST VIEWED IN NETSCAPE NAVIGATOR 4.0
+                        </marquee>
+                    </div>
+                </div>
+
+                <h3 style="text-align: center; margin-bottom: 20px; font-family: 'Courier New', monospace;">
+                    Classic Geocities GIF Collection
+                </h3>
+                
+                <div class="gif-gallery">
+                    <div class="gif-item email" title="Email Me!">✉️</div>
+                    <div class="gif-item flame" title="HOT!">🔥</div>
+                    <div class="gif-item sparkle" title="NEW!">✨</div>
+                    <div class="gif-item arrow" title="Click Here!">👇</div>
+                    <div class="gif-item new" title="New!">NEW</div>
+                    <div class="gif-item visitor" title="Visitor Counter">👤</div>
+                    <div class="gif-item" style="animation: blink 1s infinite;" title="Under Construction">🚧</div>
+                    <div class="gif-item" style="animation: spin 3s linear infinite;" title="Loading...">💿</div>
+                    <div class="gif-item" style="animation: bounce 0.8s infinite;" title="Welcome!">🎉</div>
+                    <div class="gif-item" style="animation: flicker 0.3s infinite;" title="ANIMATED!">💫</div>
+                    <div class="gif-item" style="animation: pulse 1.5s infinite;" title="Click Me!">👆</div>
+                    <div class="gif-item" style="animation: shake 0.5s infinite;" title="Warning!">⚡</div>
+                </div>
+
+                <p style="text-align: center; margin-top: 20px; font-family: 'Comic Sans MS', cursive; color: #6b7280;">
+                    (Hover over the icons to see their original purpose!)
+                </p>
+            </div>
+        </div>
+
+        <!-- The Philosophy -->
+        <div class="section">
+            <h2>The Philosophy of Forever Incomplete</h2>
+            <p>In the late 1990s, millions of people discovered they could make a website. Not a perfect website. Not even a finished website. Just... <em>a website</em>. Their website.</p>
+            
+            <p>And so they did. They cobbled together HTML in Notepad. They scoured GIF archives for the perfect spinning skull or flame-bordered email icon. They picked a tiled background—usually starfield or marble texture—and they declared to the world: <strong>"UNDER CONSTRUCTION"</strong>.</p>
+            
+            <div class="quote-box">
+                "The 'Under Construction' GIF wasn't a bug. It was the feature. It said: 'I'm building something. I don't know what yet. But I'm here.'"
+            </div>
+            
+            <p>This was the Geocities mindset. The web wasn't a publishing platform where you needed to be complete before you went live. It was a <em>sandbox</em>. A place to tinker, to experiment, to fail in public. Pages were perpetually unfinished because the builders were learning as they went.</p>
+
+            <p>Today's web demands polish. Launch broken, and you're roasted on Twitter. But in 1998? Everyone's page was broken. That was part of the charm.</p>
+        </div>
+
+        <!-- The GIF Economy -->
+        <div class="section">
+            <h2>The GIF Economy</h2>
+            <p>If the early web had a currency, it was the animated GIF. Not photographs. Not vector illustrations. <strong>Looping, dithered, 256-color animated GIFs</strong>, usually swiped from "free graphics" archives with names like "Joe's GIF Emporium" or "The Animated GIF Vault."</p>
+
+            <div class="gif-legend">
+                <div class="legend-item">
+                    <div class="legend-icon">🚧</div>
+                    <div class="legend-text"><strong>Under Construction</strong><br>The universal symbol of "I started this but got distracted"</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">✉️</div>
+                    <div class="legend-text"><strong>Email Icon</strong><br>Usually spinning, always clickable, often broken</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">🔥</div>
+                    <div class="legend-text"><strong>Flames</strong><br>For anything that needed to look "cool" or "extreme"</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">✨</div>
+                    <div class="legend-text"><strong>Sparkles/Stars</strong><br>Universal decoration. More = better</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">NEW</div>
+                    <div class="legend-text"><strong>"NEW!" Badge</strong><br>Applied to content that was new in 1997 and never removed</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">👇</div>
+                    <div class="legend-text"><strong>Pointing Arrow</strong><br>"Click here!" in case you weren't sure how links worked</div>
+                </div>
+            </div>
+
+            <p>These weren't just decorations. They were a <em>language</em>. A set of visual conventions that told you what kind of site you were on. Flames meant "edgy teenager." Sparkles meant "fan page." Construction workers meant "check back in 6 months (never)."</p>
+        </div>
+
+        <!-- Timeline -->
+        <div class="section">
+            <h2>Historical Timeline</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1994</div>
+                    <div class="timeline-content">Geocities launches as "Beverly Hills Internet." The idea: organize the web into themed "neighborhoods" where anyone can claim a digital homestead for free.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1995-1996</div>
+                    <div class="timeline-content">The "Under Construction" GIF emerges as the universal symbol of the web-in-progress. WYSIWYG editors like FrontPage and Netscape Composer democratize web building—no coding required.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1997-1999</div>
+                    <div class="timeline-content">Peak Geocities. Millions of homepages bloom: fan pages, personal diaries, tutorials, shrines. The web is alive with amateur creativity. "Free graphics" archives become essential infrastructure.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1999</div>
+                    <div class="timeline-content">Yahoo acquires Geocities for $3.57 billion. At its peak, Geocities is the third-most-visited site on the web. The party is still going.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2000-2005</div>
+                    <div class="timeline-content">The web professionalizes. CSS becomes standard. Blogging platforms like WordPress and Blogger offer cleaner, easier publishing. The DIY homepage starts to feel dated.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2009</div>
+                    <div class="timeline-content">Yahoo announces Geocities will shut down. Archivists scramble to preserve what they can. On October 26, 2009, Geocities goes dark. 38 million pages vanish.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2010-Present</div>
+                    <div class="timeline-content">The Geocities aesthetic becomes retro cool. Archive.org preserves fragments. New projects like Neocities revive the DIY spirit. The "Under Construction" GIF becomes a nostalgic relic.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Loss -->
+        <div class="section">
+            <h2>What We Lost</h2>
+            <p>When Geocities died in 2009, the web lost something it will never get back: <strong>the amateur</strong>.</p>
+            
+            <p>Not amateur in the sense of unskilled, but amateur in the sense of <em>doing it for love</em>. Geocities pages weren't trying to be businesses. They weren't optimizing for SEO. They weren't building personal brands. They were just... people, making things, because they could.</p>
+
+            <p>A teenager's Pokémon fan page. A middle-aged dad's photo gallery from his trip to Yosemite. A college student's Final Fantasy VII shrine with a 300-entry bestiary they typed by hand. These weren't professional projects. They were <em>acts of enthusiasm</em>.</p>
+
+            <div class="quote-box">
+                "The modern web wants you to be a creator. The Geocities web just wanted you to be <em>you</em>."
+            </div>
+
+            <p>Today's web is cleaner, faster, more accessible. But it's also more uniform. Every personal site looks like a Medium blog or a Squarespace template. The chaos is gone. The GIFs are gone. The "Under Construction" mindset—where it's okay to be incomplete, to be messy, to be learning—is gone.</p>
+
+            <p>And that's a loss.</p>
+        </div>
+
+        <!-- The Legacy -->
+        <div class="section">
+            <h2>The Legacy</h2>
+            <p>The "Under Construction" era taught the web a lesson it often forgets: <strong>imperfection is okay</strong>.</p>
+
+            <p>In 1998, nobody expected you to be a professional designer. Nobody cared if your page had broken images or Comic Sans headers. The barrier to entry was "can you type HTML tags?" and the aesthetic standard was "did you have fun making this?"</p>
+
+            <p>We traded that openness for polish. For performance. For monetization. And those aren't bad things! But in the process, we lost the permission to be bad at it.</p>
+
+            <div class="example-box">
+&lt;!-- Actual Geocities HTML circa 1999 --&gt;<br>
+&lt;center&gt;<br>
+&nbsp;&nbsp;&lt;img src="construction.gif"&gt;<br>
+&nbsp;&nbsp;&lt;h1&gt;&lt;font color="red"&gt;*** UNDER CONSTRUCTION ***&lt;/font&gt;&lt;/h1&gt;<br>
+&nbsp;&nbsp;&lt;p&gt;This page is still being worked on! Come back soon!!!&lt;/p&gt;<br>
+&nbsp;&nbsp;&lt;img src="construction.gif"&gt;<br>
+&lt;/center&gt;<br>
+&lt;marquee&gt;LAST UPDATED: 03/15/1999&lt;/marquee&gt;
+            </div>
+
+            <p>Projects like <a href="https://neocities.org" target="_blank" style="color: #BF5700; font-weight: 600;">Neocities</a> are trying to revive this spirit. They're not just offering free hosting—they're offering permission to be weird, to be unfinished, to put a spinning GIF of a construction worker on your homepage if you want.</p>
+
+            <p>Because that's what the "Under Construction" GIF really meant. Not "this site is broken." But "I'm still building. I'm still learning. And that's okay."</p>
+        </div>
+
+        <!-- Cultural Artifacts -->
+        <div class="section">
+            <h2>Essential Geocities Artifacts</h2>
+            <p>Every proper Geocities page had at least three of these:</p>
+            
+            <div class="example-box" style="background: #1a1a1a; color: #10b981;">
+✓ Tiled background (starfield, marble, or construction paper texture)<br>
+✓ &lt;marquee&gt; tag with scrolling text<br>
+✓ "Under Construction" GIF (bonus points for animated construction worker)<br>
+✓ "Email me!" icon (spinning envelope required)<br>
+✓ Hit counter showing suspiciously low numbers<br>
+✓ "Best viewed in [specific browser] at [specific resolution]" warning<br>
+✓ MIDI background music (optional but encouraged)<br>
+✓ "Sign my guestbook!" link (100% broken in 2025)<br>
+✓ Multiple font colors in a single paragraph<br>
+✓ At least one &lt;blink&gt; or &lt;marquee&gt; tag<br>
+✓ Links section titled "Cool Sites" or "My Friends"<br>
+✓ "Last Updated" timestamp from 1999 that was never updated
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <a href="../" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to Gallery
+            </a>
+            <div style="font-family: 'Courier New', monospace; font-size: 0.75rem; color: #6b7280;">
+                ARTIFACT EXCAVATED // 2025 // STILL UNDER CONSTRUCTION
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

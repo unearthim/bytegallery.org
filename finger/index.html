@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Digital Finger - An Interactive History</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=VT323&display=swap" rel="stylesheet" />
+
+    <!-- 3. Styles -->
+    <style>
+        :root {
+            --bg-color: #fcfaf5; /* unearth-bg */
+            --accent: #BF5700; /* unearth-primary */
+            --accent-terminal: #10b981; /* Terminal Green for specific era */
+        }
+
+        .cursor-body {
+            background-color: var(--bg-color);
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            cursor: none; /* We hide the real cursor to render the artifact */
+        }
+
+        /* Spotlight Effect */
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            background: radial-gradient(600px circle at var(--x) var(--y), rgba(191, 87, 0, 0.05), transparent 40%);
+            z-index: 1;
+        }
+
+        /* --- ERA 1: The Terminal (1970s) --- */
+        .cursor-block {
+            width: 12px;
+            height: 20px;
+            background-color: var(--accent-terminal);
+            animation: blink-rapid 1s steps(2, start) infinite;
+        }
+        @keyframes blink-rapid { to { visibility: hidden; } }
+        
+        .terminal-screen {
+            font-family: 'VT323', monospace;
+            color: var(--accent-terminal);
+            text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+            font-size: 24px;
+            line-height: 1.2;
+        }
+
+        /* --- ERA 4: The Touch (2007) --- */
+        .touch-point {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            transform: scale(1);
+            transition: transform 0.1s;
+        }
+        .touch-point.clicking {
+            transform: scale(0.8);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Glitch Text */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+    </style>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+                'unearth-terminal': '#10b981',
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Icon Components (Using Font Awesome) ---
+        const Icon = ({ faClass, size, className = '' }) => {
+            const style = size ? { fontSize: `${size}px` } : {};
+            return <i className={`fa-solid ${faClass} ${className}`} style={style}></i>;
+        };
+
+        const ArrowLeft = (props) => <Icon faClass="fa-arrow-left" {...props} />;
+        const MousePointer = (props) => <Icon faClass="fa-mouse-pointer" {...props} />;
+        const Fingerprint = (props) => <Icon faClass="fa-fingerprint" {...props} />;
+
+        // --- COMPONENTS ---
+
+        const SimulatedCursor = ({ x, y, era, isClicking }) => {
+            const style = {
+                position: 'fixed',
+                top: y,
+                left: x,
+                pointerEvents: 'none',
+                zIndex: 9999,
+                transform: 'translate(0, 0)', // Reset default
+            };
+
+            if (era === 'terminal') {
+                return (
+                    <div style={{ ...style, top: y - 10, left: x + 2 }}>
+                        <div className="cursor-block"></div>
+                    </div>
+                );
+            }
+
+            if (era === 'gui') {
+                return (
+                    <div style={style}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white)' }}>
+                            <path d="M2 2V16L7 11H11L15 20L18 18L13 10H19L2 2Z" fill="black" />
+                        </svg>
+                    </div>
+                );
+            }
+
+            if (era === 'web') {
+                return (
+                    <div style={{ ...style, transform: 'translate(-9px, -2px)' }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="black" strokeWidth="1.5">
+                           <path d="M7 11v-4c0-1.5 1-2 2.5-2s2.5 1 2.5 2v4h1v-2c0-1.5 1-2 2.5-2s2.5 1 2.5 2v2h1v-1c0-1.5 1-2 2.5-2s2.5 1 2.5 2v6c0 3-2.5 6-6 6h-4c-2.5 0-4.5-2-4.5-5v-4L7 11z" />
+                        </svg>
+                    </div>
+                );
+            }
+
+            if (era === 'touch') {
+                return (
+                    <div style={{ ...style, transform: 'translate(-20px, -20px)' }}>
+                        <div className={`touch-point ${isClicking ? 'clicking' : ''}`}></div>
+                    </div>
+                );
+            }
+
+            return null;
+        };
+
+        const EraDisplay = ({ era, isClicking }) => {
+            // Era 1: Terminal
+            if (era.id === 'terminal') {
+                return (
+                    <div className="h-full w-full flex flex-col items-start justify-center bg-black p-8 font-mono border border-unearth-terminal/30 rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                        <div className="terminal-screen">
+                            <div>> INITIATE_SYSTEM</div>
+                            <div>> LOADING DRIVERS...</div>
+                            <div>> <span className="opacity-50">USER_DETECTED</span></div>
+                            <div className="mt-4 flex">
+                                > WAITING_FOR_INPUT
+                            </div>
+                        </div>
+                        <p className="mt-12 text-unearth-terminal/50 text-xs max-w-md font-sans">
+                            The cursor began as a placeholder. It wasn't a pointer; it was a "curser" (runner), indicating where the next character would be born. It blinked to prove the machine was alive.
+                        </p>
+                    </div>
+                );
+            }
+
+            // Era 2: The GUI (Arrow)
+            if (era.id === 'gui') {
+                return (
+                    <div className="h-full w-full flex flex-col items-center justify-center bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-black border-b-black relative overflow-hidden">
+                        <div className="absolute top-10 left-10 w-48 h-32 bg-white border border-black shadow-[4px_4px_0_rgba(0,0,0,0.2)]">
+                            <div className="bg-[#000080] text-white text-xs px-1 py-0.5 flex justify-between items-center">
+                                <span>File Manager</span>
+                                <div className="w-3 h-3 bg-[#c0c0c0] border border-t-white border-l-white border-r-black border-b-black"></div>
+                            </div>
+                        </div>
+                        
+                        <div className="z-10 bg-white p-6 border border-black shadow-[4px_4px_0_black] max-w-sm text-center">
+                            <h3 className="font-bold text-black mb-2 font-sans">The Tilted Arrow</h3>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Why is it tilted? Because on low-resolution screens (1981), drawing a vertical line was hard to distinguish. Susan Kare designed the tilt for legibility, and it stuck for 40 years.
+                            </p>
+                            <button className="mt-4 px-4 py-1 bg-[#c0c0c0] border-t-white border-l-white border-b-black border-r-black border-2 active:border-t-black active:border-l-black active:border-b-white active:border-r-white text-black text-xs">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 3: The Web (Hand)
+            if (era.id === 'web') {
+                return (
+                    <div className="h-full w-full flex flex-col items-center justify-center bg-white text-black font-serif">
+                        <h1 className="text-4xl text-blue-700 underline mb-8 cursor-pointer hover:text-red-600">
+                            Hyperlink
+                        </h1>
+                        <div className="max-w-sm text-center">
+                            <p className="mb-4">
+                                When the web arrived, the arrow wasn't enough. We needed to know what was clickable. 
+                            </p>
+                            <p className="text-sm text-gray-500 italic">
+                                The "Hand" cursor is the first time the computer explicitly imitated the human body to communicate affordance.
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 4: Touch
+            if (era.id === 'touch') {
+                return (
+                    <div className="h-full w-full flex flex-col items-center justify-center bg-gray-100 relative overflow-hidden">
+                        {isClicking && (
+                            <div className="absolute w-64 h-64 border border-gray-400/50 rounded-full animate-ping"></div>
+                        )}
+
+                        <div className="z-10 text-center px-8">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-pink-500 to-orange-400 shadow-lg flex items-center justify-center">
+                                <Fingerprint className="text-white/50" size={40} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-unearth-main mb-2">The Vanishing</h2>
+                            <p className="text-unearth-secondary text-sm leading-relaxed max-w-xs mx-auto">
+                                With the iPhone, the cursor died. The intermediary was removed. We now touch the data directly. The "digital finger" became the *actual* finger.
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button
+                            key={era.id}
+                            onClick={() => setEra(index)}
+                            className={`
+                                group flex items-center gap-4 text-left transition-all duration-300 cursor-none
+                                ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 flex items-center justify-center rounded-full border 
+                                transition-all duration-300 font-mono text-xs
+                                ${currentEra === index 
+                                    ? 'border-unearth-primary bg-unearth-primary/10 text-unearth-primary scale-110' 
+                                    : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-secondary/50'}
+                            `}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>
+                                    {era.title}
+                                </div>
+                                <div className="text-[10px] text-unearth-secondary/70 uppercase tracking-wider">
+                                    {era.subtitle}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- MAIN APP ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+            const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
+            const [isClicking, setIsClicking] = useState(false);
+            const containerRef = useRef(null);
+
+            // Mouse Tracking for Custom Cursor & Spotlight
+            useEffect(() => {
+                const handleMouseMove = (e) => {
+                    setMousePos({ x: e.clientX, y: e.clientY });
+                    if (containerRef.current) {
+                        containerRef.current.style.setProperty('--x', `${e.clientX}px`);
+                        containerRef.current.style.setProperty('--y', `${e.clientY}px`);
+                    }
+                };
+                const handleMouseDown = () => setIsClicking(true);
+                const handleMouseUp = () => setIsClicking(false);
+
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('mousedown', handleMouseDown);
+                window.addEventListener('mouseup', handleMouseUp);
+
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('mousedown', handleMouseDown);
+                    window.removeEventListener('mouseup', handleMouseUp);
+                };
+            }, []);
+
+            const eras = [
+                { id: 'terminal', year: '1973', title: 'The Blinking Block', subtitle: 'Xerox Alto / Terminal', description: "Before the mouse, the cursor was a creature of the keyboard. It was a flashing underscore or block of phosphor green. It didn't move freely; it snapped to the grid of the character map. It was a heartbeat, waiting for a command.", tags: ['CLI', 'Monochrome', 'Grid'] },
+                { id: 'gui', year: '1984', title: 'The Tilted Arrow', subtitle: 'Macintosh System 1', description: "The mouse gave us freedom, but pixels gave us constraints. A vertical arrow disappeared against vertical lines. Susan Kare tilted it to the left, creating a straight edge on one side and a jagged edge on the other, making it visible against any background.", tags: ['Susan Kare', 'Pixel Art', '1-Bit'] },
+                { id: 'web', year: '1993', title: 'The Hand', subtitle: 'Mosaic / Hyperlinks', description: "The web introduced a new state: the 'Hover.' We needed to know what was a link and what was just text. The gloved hand became the universal symbol for 'Go There.' It anthropomorphized the navigation process.", tags: ['Pointer', 'Hyperlink', 'Affordance'] },
+                { id: 'touch', year: '2007', title: 'The Touch', subtitle: 'iPhone OS 1', description: "Capacitive touch screens removed the abstraction. We no longer needed a pointer to mediate our intent. The cursor vanished, replaced by the physics of direct manipulation. The only vestige is the 'tap' ripple indicator used in demos.", tags: ['No UI', 'Direct Manipulation', 'Haptics'] }
+            ];
+
+            return (
+                <div className="cursor-body" ref={containerRef}>
+                    <SimulatedCursor x={mousePos.x} y={mousePos.y} era={eras[currentEraIndex].id} isClicking={isClicking} />
+                    <div className="spotlight"></div>
+
+                    <header className="pt-16 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                        <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors cursor-pointer flex items-center gap-2">
+                                <ArrowLeft size={16} /> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-008</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                THE DIGITAL <br/>
+                                <span className="text-unearth-primary glitch-text">FINGER</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-mono">
+                                Our primary avatar on the screen.
+                            </p>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Input Evolution
+                            </div>
+                            <EraSelector currentEra={currentEraIndex} eras={eras} setEra={setCurrentEraIndex} />
+                            
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2 flex items-center gap-2">
+                                    <MousePointer size={12} /> ARTIFACT NOTES
+                                </div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-[10px] border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-8 relative min-h-[500px] flex items-center justify-center border border-unearth-border rounded-xl bg-unearth-surface shadow-lg overflow-hidden cursor-none">
+                            <div className="w-full h-full p-8 flex items-center justify-center">
+                                <EraDisplay era={eras[currentEraIndex]} isClicking={isClicking} />
+                            </div>
+                        </div>
+                    </main>
+
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p>Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- Render the App to the DOM ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

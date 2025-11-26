@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- === Primary Meta Tags === -->
+    <title>ART-021: The Unsolicited Serenade | The Byte Gallery</title>
+    <meta name="title" content="ART-021: The Unsolicited Serenade | The Byte Gallery">
+    <meta name="description" content="The embedded MIDI file. A tiny, terrible-sounding song that auto-played on page load, representing the original sin of web audio.">
+    <meta name="keywords" content="MIDI, Web Audio, Autoplay, 1990s Web, Digital Archaeology, Byte Gallery, unearth.im">
+    <meta name="author" content="bytegallery.org (An unearth.im Project)">
+    <link rel="canonical" href="https://bytegallery.org/midi/" />
+
+    <!-- === Open Graph === -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://bytegallery.org/midi/">
+    <meta property="og:title" content="ART-021: The Unsolicited Serenade">
+    <meta property="og:description" content="The embedded MIDI file. A tiny, terrible-sounding song that auto-played on page load, representing the original sin of web audio.">
+    <meta property="og:image" content="https://bytegallery.org/og-image.png">
+
+    <!-- === Twitter Card === -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bytegallery.org/midi/">
+    <meta property="twitter:title" content="ART-021: The Unsolicited Serenade">
+    <meta property="twitter:description" content="A tiny, terrible-sounding song that auto-played on page load, representing the original sin of web audio.">
+    <meta property="twitter:image" content="https://bytegallery.org/og-image.png">
+
+    <!-- === Fonts === -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fcfaf5;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 60px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 40px;
+        }
+
+        .accession {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #BF5700;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .metadata {
+            display: flex;
+            gap: 30px;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 20px;
+        }
+
+        .metadata span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Interactive Section */
+        .interactive-section {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .midi-player {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .midi-player::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+            animation: scanlines 20s linear infinite;
+        }
+
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(20px); }
+        }
+
+        .midi-controls {
+            position: relative;
+            z-index: 10;
+        }
+
+        .play-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .play-btn.playing {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .midi-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .midi-note {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .song-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .song-btn {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .song-btn:hover {
+            background: #BF5700;
+            color: white;
+            border-color: #BF5700;
+            transform: translateY(-2px);
+        }
+
+        .song-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Content Sections */
+        .section {
+            margin: 60px 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            border-left: 4px solid #BF5700;
+            padding-left: 20px;
+        }
+
+        p {
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 20px;
+        }
+
+        .example-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+
+        .code {
+            background: #1a1a1a;
+            color: #10b981;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #BF5700, #e5e7eb);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -46px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: #BF5700;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px #fcfaf5;
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            color: #BF5700;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content {
+            font-family: 'Lora', serif;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        /* Footer Nav */
+        .footer-nav {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 2px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #BF5700;
+            text-decoration: none;
+            font-weight: 600;
+            transition: gap 0.3s ease;
+        }
+
+        .back-link:hover {
+            gap: 15px;
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-left: 4px solid #667eea;
+            padding: 20px 25px;
+            margin: 30px 0;
+            font-family: 'Lora', serif;
+            font-style: italic;
+            color: #374151;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 40px 15px; }
+            .metadata { flex-direction: column; gap: 10px; }
+            .song-selector { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <span class="accession">ART-021 // ARCHAEOBYTOLOGY.ORG</span>
+            <h1>The Unsolicited Serenade</h1>
+            <p class="subtitle">The embedded MIDI file and the original sin of web audio</p>
+            <div class="metadata">
+                <span><i class="fa-solid fa-calendar"></i> Era: 1997 - 2003</span>
+                <span><i class="fa-solid fa-layer-group"></i> Medium: MIDI, HTML</span>
+                <span><i class="fa-solid fa-music"></i> Status: Unearthed</span>
+            </div>
+        </div>
+
+        <!-- Interactive MIDI Player -->
+        <div class="interactive-section">
+            <h2>⚠️ Experience the Serenade (Your Choice)</h2>
+            <p style="margin-bottom: 30px;">Unlike the websites of 1997, we're giving you control. Click play to hear what millions endured automatically.</p>
+            
+            <div class="midi-player">
+                <div class="midi-controls">
+                    <button class="play-btn" id="playBtn">
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+                    <div class="midi-title" id="songTitle">Select a Classic MIDI Below</div>
+                    <div class="midi-note">Authentic early web experience 🎹</div>
+                </div>
+            </div>
+
+            <div class="song-selector">
+                <button class="song-btn" data-song="canon">Canon in D</button>
+                <button class="song-btn" data-song="fur-elise">Für Elise</button>
+                <button class="song-btn" data-song="mario">Super Mario Bros</button>
+                <button class="song-btn" data-song="zelda">Zelda Theme</button>
+                <button class="song-btn" data-song="toccata">Toccata & Fugue</button>
+                <button class="song-btn" data-song="swan-lake">Swan Lake</button>
+            </div>
+
+            <div class="example-box" style="margin-top: 30px;">
+&lt;!-- Actual HTML from 1999 --&gt;<br>
+&lt;embed src="midis/song.mid" autostart="true" loop="true" hidden="true" width="2" height="2"&gt;<br>
+&lt;bgsound src="midis/song.mid" loop="infinite"&gt;
+            </div>
+        </div>
+
+        <!-- The History -->
+        <div class="section">
+            <h2>The Original Sin</h2>
+            <p>Before streaming, before MP3s, before anyone had heard of a "skip button," there was the MIDI file. A tiny, synthesized song file—often under 50KB—that would begin playing the moment a webpage loaded. No warning. No consent. Just instant, tinny music piped directly into your speakers at whatever volume you'd last set them to.</p>
+            
+            <p>The MIDI (Musical Instrument Digital Interface) file wasn't inherently evil. It was a brilliant piece of technology from 1983, designed to let electronic instruments communicate. A MIDI file didn't store audio—it stored <em>instructions</em>: which notes to play, for how long, with what intensity. Your computer's sound card would interpret these instructions using its own synthesizer.</p>
+            
+            <div class="quote-box">
+                "The problem wasn't MIDI. The problem was autoplay. The problem was that every teenager with a Geocities page thought their homepage needed a soundtrack."
+            </div>
+            
+            <p>And because MIDI files were so small, they were perfect for the dial-up era. A full orchestral rendition of Beethoven's 5th could fit in 30KB. Compare that to a 3-minute MP3 at 3MB+, and you can see why webmasters reached for MIDI.</p>
+        </div>
+
+        <!-- The Experience -->
+        <div class="section">
+            <h2>The Experience</h2>
+            <p>Imagine: You're researching a school project. It's 11 PM. Your family is asleep. You click a link from a search engine (probably AltaVista or Yahoo). The page loads.</p>
+            
+            <p>And then: <strong>MIDI rendition of "Fur Elise" at maximum volume.</strong></p>
+            
+            <p>You scramble for the volume knob. Too late. Your parents are awake. The dog is barking. The cat has fled to another dimension. And you can't find the stop button because it's hidden in a 2x2 pixel <span class="code">&lt;embed&gt;</span> tag with <span class="code">hidden="true"</span>.</p>
+
+            <p>This wasn't a bug. This was <em>intentional design</em>. Webmasters wanted you to hear their curated soundtrack. They wanted ambiance. They wanted their homepage to feel like walking into a store with background music. What they created was closer to being trapped in an elevator with a malfunctioning sound system.</p>
+        </div>
+
+        <!-- Timeline -->
+        <div class="section">
+            <h2>Historical Timeline</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1983</div>
+                    <div class="timeline-content">MIDI standard is introduced for electronic instruments. Revolutionary for music production. Eventually becomes revolutionary for annoying website visitors.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1995-1996</div>
+                    <div class="timeline-content">Netscape Navigator and Internet Explorer add support for embedded media. The <span class="code">&lt;embed&gt;</span> and <span class="code">&lt;bgsound&gt;</span> tags are born. Pandora's box is opened.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1997-1999</div>
+                    <div class="timeline-content">Peak MIDI era. Geocities pages, fan sites, and personal homepages universally adopt background music. "MIDI archives" become popular destinations. The web becomes <em>loud</em>.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2000-2002</div>
+                    <div class="timeline-content">Broadband becomes more common. MP3 files start to replace MIDIs. Flash sites introduce better audio control. The tide begins to turn.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2003-2005</div>
+                    <div class="timeline-content">Web standards evolve. CSS and JavaScript offer better control. Autoplay becomes stigmatized. MIDI fades into memory, preserved only in retro homages and nightmares.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2017-Present</div>
+                    <div class="timeline-content">Major browsers block autoplay audio by default. Chrome, Firefox, and Safari require user interaction. The ghost of the MIDI file finally rests.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cultural Impact -->
+        <div class="section">
+            <h2>Cultural Impact</h2>
+            <p>The embedded MIDI taught the web a hard lesson: <strong>Just because you can, doesn't mean you should.</strong></p>
+            
+            <p>It was the web's first major confrontation with the ethics of user agency. Before MIDI, websites were mostly passive—you read them, you clicked links. MIDI made the web <em>intrusive</em>. It acted on you without asking.</p>
+
+            <p>This debate would repeat itself endlessly:</p>
+            <ul style="font-family: 'Lora', serif; color: #374151; margin-left: 40px; line-height: 1.8;">
+                <li>Auto-playing Flash intros (2000s)</li>
+                <li>Auto-playing video ads (2010s)</li>
+                <li>Push notifications (2010s-present)</li>
+                <li>Modal pop-ups and newsletter sign-ups (present)</li>
+            </ul>
+
+            <p>The MIDI was patient zero for web annoyance. It showed us that technical possibility doesn't equal good UX. It taught designers that users want <em>control</em>.</p>
+
+            <div class="quote-box">
+                "The MIDI didn't kill the personal homepage. But it certainly didn't help."
+            </div>
+        </div>
+
+        <!-- The Nostalgia -->
+        <div class="section">
+            <h2>Why We Miss It (Kind Of)</h2>
+            <p>Here's the strange part: despite the trauma, there's a weird fondness for MIDI culture. Not because the execution was good, but because it represented an era when the web was still <em>expressive</em>.</p>
+
+            <p>In 1999, your homepage was <em>yours</em>. You chose the MIDI. You chose the background tile. You chose the animated GIF of flames or stars. It was chaotic, it was garish, it was often borderline unusable—but it was <strong>personal</strong>.</p>
+
+            <p>Today's web is cleaner, faster, more professional. But it's also more homogeneous. Every site uses the same frameworks, the same fonts, the same design patterns. The MIDI era was the wild west. The modern web is a gated community.</p>
+
+            <p>So when we hear those tinny, robotic renditions of classical music, we're not just hearing bad audio. We're hearing a time when anyone could make something weird and put it on the internet. And that's worth remembering.</p>
+        </div>
+
+        <!-- Technical Specs -->
+        <div class="section">
+            <h2>Technical Specifications</h2>
+            <div class="example-box">
+<strong>Common MIDI Implementation (1997-2003):</strong><br><br>
+&lt;!-- Netscape & Early IE --&gt;<br>
+&lt;embed src="background.mid" autostart="true" loop="true" hidden="true"&gt;<br><br>
+&lt;!-- Internet Explorer Only --&gt;<br>
+&lt;bgsound src="background.mid" loop="infinite"&gt;<br><br>
+<strong>File Size:</strong> 5KB - 100KB (avg. 30KB)<br>
+<strong>Format:</strong> .mid, .midi<br>
+<strong>Quality:</strong> Entirely dependent on user's sound card<br>
+<strong>User Control:</strong> Usually none<br>
+<strong>Skip Button:</strong> Didn't exist<br>
+<strong>Volume Control:</strong> System-level only<br>
+<strong>Mute Button:</strong> Close tab or cry
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <a href="../" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to Gallery
+            </a>
+            <div style="font-family: 'Courier New', monospace; font-size: 0.75rem; color: #6b7280;">
+                ARTIFACT EXCAVATED // 2025
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MIDI Player Logic (Simulated - uses real audio for demo)
+        const playBtn = document.getElementById('playBtn');
+        const songTitle = document.getElementById('songTitle');
+        const songButtons = document.querySelectorAll('.song-btn');
+        
+        let currentAudio = null;
+        let isPlaying = false;
+        let currentSong = null;
+
+        // Simulated MIDI songs using data URLs or external sources
+        const songs = {
+            'canon': {
+                name: 'Canon in D',
+                url: 'https://www.mfiles.co.uk/downloads/canon-in-d.mid'
+            },
+            'fur-elise': {
+                name: 'Für Elise',
+                url: 'https://www.mfiles.co.uk/downloads/fur-elise.mid'
+            },
+            'mario': {
+                name: 'Super Mario Bros Theme',
+                url: 'https://www.vgmpf.com/Wiki/images/7/7b/Super_Mario_Bros._-_NES_-_Overworld.mid'
+            },
+            'zelda': {
+                name: 'The Legend of Zelda',
+                url: 'https://www.vgmpf.com/Wiki/images/4/42/Legend_of_Zelda%2C_The_-_NES_-_Title_Theme.mid'
+            },
+            'toccata': {
+                name: 'Toccata and Fugue in D Minor',
+                url: 'https://www.mfiles.co.uk/downloads/toccata-and-fugue.mid'
+            },
+            'swan-lake': {
+                name: 'Swan Lake',
+                url: 'https://www.mfiles.co.uk/downloads/swan-lake.mid'
+            }
+        };
+
+        // Song selection
+        songButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const songId = btn.dataset.song;
+                selectSong(songId);
+            });
+        });
+
+        function selectSong(songId) {
+            // Stop current audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
+            // Update UI
+            songButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Set current song
+            currentSong = songId;
+            songTitle.textContent = songs[songId].name;
+            
+            // Reset play button
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playBtn.classList.remove('playing');
+        }
+
+        // Play/Pause functionality
+        playBtn.addEventListener('click', () => {
+            if (!currentSong) {
+                alert('Please select a MIDI track first!');
+                return;
+            }
+
+            if (isPlaying) {
+                // Pause
+                if (currentAudio) {
+                    currentAudio.pause();
+                }
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                playBtn.classList.remove('playing');
+            } else {
+                // Play
+                // Note: Modern browsers may not play MIDI directly
+                // This is a simulation showing the concept
+                currentAudio = new Audio(songs[currentSong].url);
+                currentAudio.play().catch(err => {
+                    console.log('MIDI playback not supported, showing simulation');
+                    simulateMIDIPlayback();
+                });
+                
+                isPlaying = true;
+                playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                playBtn.classList.add('playing');
+
+                currentAudio.addEventListener('ended', () => {
+                    isPlaying = false;
+                    playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    playBtn.classList.remove('playing');
+                });
+            }
+        });
+
+        function simulateMIDIPlayback() {
+            // If MIDI playback isn't supported, show a message
+            alert(`🎹 MIDI Preview\n\nIn 1999, "${songs[currentSong].name}" would now be playing through your computer's sound card synthesizer—probably at maximum volume, without your permission, and with no way to stop it except closing the browser.\n\nModern browsers don't support MIDI playback by default (thank goodness).`);
+            
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playBtn.classList.remove('playing');
+        }
+    </script>
+
+</body>
+</html>

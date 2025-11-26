@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Immortal Icon - An Interactive History</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Courier+New&display=swap" rel="stylesheet" />
+
+    <!-- 3. Styles -->
+    <style>
+        :root {
+            --bg-color: #fcfaf5; /* unearth-bg */
+            --accent: #BF5700; /* unearth-primary */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Spotlight Effect */
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; /* Disabled for light theme */
+            background: radial-gradient(600px circle at var(--x) var(--y), rgba(191, 87, 0, 0.05), transparent 40%);
+            z-index: 1;
+        }
+
+        /* --- ERA 1: The Physical Object (1980s) --- */
+        .floppy-disk {
+            width: 200px;
+            height: 200px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.5),
+                inset -2px -2px 5px rgba(0,0,0,0.5),
+                5px 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .floppy-disk:active {
+            transform: scale(0.98);
+        }
+        .floppy-shutter {
+            position: absolute;
+            top: 0;
+            left: 25%;
+            width: 50%;
+            height: 65px;
+            background: linear-gradient(90deg, #888, #ccc, #888);
+            border-radius: 0 0 4px 4px;
+            transition: transform 0.5s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .floppy-shutter.open {
+            transform: translateX(-30px);
+        }
+        .floppy-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10%;
+            width: 80%;
+            height: 90px;
+            background-color: #f8f8f8;
+            border-radius: 2px;
+            transform: rotate(-0.5deg);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            color: #000080;
+            font-weight: bold;
+            font-size: 14px;
+            overflow: hidden;
+        }
+        .write-protect {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            background-color: #000;
+            border: 1px solid #555;
+        }
+        .led-light {
+            width: 8px;
+            height: 8px;
+            background-color: #ccc;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -20px;
+            right: 50%;
+            transition: background-color 0.1s;
+        }
+        .led-light.writing {
+            background-color: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        /* --- ERA 2: The Skeuomorph (2000s) --- */
+        .skeuo-btn {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(to bottom, #89c4f4 0%, #58a5f0 50%, #328ce0 51%, #1e6bc0 100%);
+            border-radius: 8px;
+            border: 1px solid #104a8e;
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.4),
+                0 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .skeuo-btn:active {
+            transform: translateY(2px);
+            box-shadow: 
+                inset 0 2px 5px rgba(0,0,0,0.3),
+                0 1px 2px rgba(0,0,0,0.2);
+            background: linear-gradient(to bottom, #1e6bc0, #328ce0);
+        }
+        /* Mini floppy inside the button */
+        .mini-floppy {
+            width: 32px;
+            height: 32px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            position: relative;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .mini-shutter {
+            position: absolute;
+            top: 0; left: 6px; width: 20px; height: 12px;
+            background: linear-gradient(90deg, #999, #ddd, #999);
+            border-bottom: 1px solid #666;
+        }
+        .mini-label {
+            position: absolute;
+            bottom: 4px; left: 4px; width: 24px; height: 12px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        /* --- ERA 3: The Abstraction (Flat Design) --- */
+        .flat-btn {
+            background: transparent;
+            border: 2px solid #b0b0b0;
+            color: #6b7280;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-family: sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .flat-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(191, 87, 0, 0.1);
+        }
+        .flat-icon {
+            width: 20px; height: 20px;
+            fill: currentColor;
+        }
+
+        /* --- ERA 4: The Ghost (Cloud) --- */
+        .cloud-status {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 12px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .typing-area {
+            width: 100%;
+            max-width: 300px;
+            height: 100px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            color: #1a1a1a;
+            font-family: monospace;
+            outline: none;
+        }
+        .typing-area:focus {
+            border-color: var(--accent);
+        }
+    </style>
+
+    <!-- Tailwind Config for JS components -->
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-primary': '#BF5700',
+                'unearth-secondary': '#6b7280',
+                'unearth-border': '#e5e7eb',
+                'unearth-surface': '#fcfaf5',
+                'unearth-main': '#1a1a1a',
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Icon Components ---
+        // Switched to Font Awesome for consistency with other gallery pages.
+        // The `size` prop is converted to an inline font-size style.
+        const Icon = ({ faClass, size, className = '' }) => {
+            const style = size ? { fontSize: `${size}px` } : {};
+            return <i className={`fa-solid ${faClass} ${className}`} style={style}></i>;
+        };
+
+        const ArrowLeft = (props) => <Icon faClass="fa-arrow-left" {...props} />;
+        const Save = (props) => <Icon faClass="fa-floppy-disk" {...props} />;
+        const Cloud = (props) => <Icon faClass="fa-cloud" {...props} />;
+        const RefreshCw = (props) => <Icon faClass="fa-arrows-rotate" {...props} />;
+        const FileText = (props) => <Icon faClass="fa-file-lines" {...props} />;
+
+        // --- Sub-Components ---
+
+        const EraDisplay = ({ era }) => {
+            // Era 1 State
+            const [isWriting, setIsWriting] = useState(false);
+            const [shutterOpen, setShutterOpen] = useState(false);
+
+            // Era 4 State
+            const [text, setText] = useState("Type something here...");
+            const [saveStatus, setSaveStatus] = useState('saved'); // saved, saving
+
+            // Handle Era 1 Click
+            const handleFloppyClick = () => {
+                setShutterOpen(true);
+                setIsWriting(true);
+                setTimeout(() => {
+                    setShutterOpen(false);
+                    setIsWriting(false);
+                }, 1500);
+            };
+
+            // Handle Era 4 Typing
+            const handleType = (e) => {
+                setText(e.target.value);
+                setSaveStatus('saving');
+                
+                // Debounce save
+                if (window.saveTimeout) clearTimeout(window.saveTimeout);
+                window.saveTimeout = setTimeout(() => {
+                    setSaveStatus('saved');
+                }, 800);
+            };
+
+            // 1. The Physical (3.5" Disk)
+            if (era.id === 'physical') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center gap-8">
+                        <div className="relative">
+                            <div className={`floppy-disk ${isWriting ? 'animate-pulse-subtle' : ''}`} onClick={handleFloppyClick}>
+                                <div className={`floppy-shutter ${shutterOpen ? 'open' : ''}`}></div>
+                                <div className="floppy-label">
+                                    PROJECT_FINAL.DOC
+                                </div>
+                                <div className="write-protect"></div>
+                            </div>
+                            {/* Drive Light */}
+                            <div className={`led-light ${isWriting ? 'writing' : ''}`}></div>
+                        </div>
+                        <div className="text-xs font-mono text-gray-500">
+                            {isWriting ? "WRITING SECTORS..." : "CLICK DISK TO SAVE"}
+                        </div>
+                    </div>
+                );
+            }
+
+            // 2. The Skeuomorph (Toolbar Icon)
+            if (era.id === 'skeuo') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center bg-[#c0c0c0] w-full rounded-lg border-2 border-t-white border-l-white border-r-black border-b-black relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full bg-[#c0c0c0] border-b-2 border-b-black p-2 flex gap-2">
+                            <div className="skeuo-btn" onClick={() => alert('Saved to Hard Drive!')}>
+                                <div className="mini-floppy">
+                                    <div className="mini-shutter" style={{ background: 'linear-gradient(90deg, #777, #aaa, #777)' }}></div>
+                                    <div className="mini-label"></div>
+                                </div>
+                            </div>
+                            <div className="w-16 h-16 bg-gray-200 rounded border border-gray-300"></div>
+                            <div className="w-16 h-16 bg-gray-200 rounded border border-gray-300"></div>
+                        </div>
+                        <div className="mt-24 text-black font-sans text-sm bg-white p-4 border border-gray-400 shadow-lg max-w-xs text-center">
+                            The icon is no longer the object. <br/> It is a picture of the object, rendered in high-gloss.
+                        </div>
+                    </div>
+                );
+            }
+
+            // 3. The Abstraction (Flat Design)
+            if (era.id === 'flat') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center bg-unearth-surface w-full rounded-lg">
+                        <button className="flat-btn">
+                            <Save size={20} />
+                            <span>SAVE CHANGES</span>
+                        </button>
+                        <p className="mt-8 text-unearth-secondary text-xs max-w-xs text-center">
+                            The metaphor persists, but the texture is gone. The floppy disk is now just a shape. A hieroglyph.
+                        </p>
+                    </div>
+                );
+            }
+
+            // 4. The Ghost (Auto-Save)
+            if (era.id === 'cloud') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center w-full gap-6">
+                        <div className="w-full max-w-xs flex justify-between items-center mb-2">
+                            <div className="text-sm font-bold text-unearth-secondary">Untitled Document</div>
+                            <div className="cloud-status">
+                                {saveStatus === 'saving' ? (
+                                    <>
+                                        <RefreshCw size={12} className="animate-spin" />
+                                        <span>Saving...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Cloud size={12} />
+                                        <span>Saved to Cloud</span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                        
+                        <textarea 
+                            className="typing-area" 
+                            value={text} 
+                            onChange={handleType}
+                            spellCheck="false"
+                        />
+                        
+                        <p className="text-unearth-secondary text-xs max-w-xs text-center leading-relaxed">
+                            The verb "to save" is dying. <br/>
+                            We no longer commit data to disk; <br/>
+                            we exist in a state of constant synchronization.
+                        </p>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button
+                            key={era.id}
+                            onClick={() => setEra(index)}
+                            className={`
+                                group flex items-center gap-4 text-left transition-all duration-300
+                                ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 flex items-center justify-center rounded-full border 
+                                transition-all duration-300 font-mono text-xs
+                                ${currentEra === index 
+                                    ? 'border-unearth-primary bg-unearth-primary/10 text-unearth-primary scale-110' 
+                                    : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-secondary/50'}
+                            `}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>
+                                    {era.title}
+                                </div>
+                                <div className="text-[10px] text-unearth-secondary/70 uppercase tracking-wider">
+                                    {era.subtitle}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- Main Application ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+            const containerRef = useRef(null);
+
+            // Mouse spotlight
+            useEffect(() => {
+                const handleMouseMove = (e) => {
+                    if (containerRef.current) {
+                        containerRef.current.style.setProperty('--x', `${e.clientX}px`);
+                        containerRef.current.style.setProperty('--y', `${e.clientY}px`);
+                    }
+                };
+                window.addEventListener('mousemove', handleMouseMove);
+                return () => window.removeEventListener('mousemove', handleMouseMove);
+            }, []);
+
+            const eras = [
+                {
+                    id: 'physical',
+                    year: '1981',
+                    title: 'The Physical Object',
+                    subtitle: 'Sony 3.5" Diskette',
+                    description: "The floppy disk was not a metaphor; it was a container. 'Saving' was a mechanical act. You inserted the media, you heard the drive spin, and you waited for the magnetic heads to write the data. It was audible, tactile, and distinct.",
+                    tags: ['Magnetic Media', '1.44MB', 'Write Protect']
+                },
+                {
+                    id: 'skeuo',
+                    year: '2003',
+                    title: 'The Skeuomorph',
+                    subtitle: 'Microsoft Office 2003',
+                    description: "Storage moved to the internal Hard Drive, but the icon remained. To make digital tools feel familiar, we rendered the floppy disk in high-gloss detail. We clicked a picture of a 1980s object to save a file in 2003, maintaining a link to a physical reality that was already fading.",
+                    tags: ['Glossy', 'Toolbar', 'Bevel']
+                },
+                {
+                    id: 'flat',
+                    year: '2013',
+                    title: 'The Abstraction',
+                    subtitle: 'Flat Design Era',
+                    description: "Design stripped away the textures. The floppy disk became a simplified silhouette—a square with a notched corner and a rectangle. It ceased to look like a disk and became a pure symbol, like a Chinese character, meaning 'Keep This'.",
+                    tags: ['Symbol', 'SVG', 'Vector']
+                },
+                {
+                    id: 'cloud',
+                    year: '2024',
+                    title: 'The Ghost',
+                    subtitle: 'Auto-Save & Cloud',
+                    description: "The icon is disappearing. In Google Docs, Notion, and modern apps, there is no save button. The state is continuously synchronized to the server. 'Saving' is no longer a discrete action the user performs; it is a state of being.",
+                    tags: ['Sync', 'Checkmark', 'Invisible']
+                }
+            ];
+
+            return (
+                <div className="relative" ref={containerRef}>
+                    <div className="spotlight"></div>
+
+                    {/* Header */}
+                    <header className="pt-16 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                        <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors cursor-pointer flex items-center gap-2">
+                                <ArrowLeft size={16} /> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-007</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                THE IMMORTAL <br/>
+                                <span className="text-unearth-primary">ICON</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-mono">
+                                Why do we click a 1980s magnetic disk to save to the cloud?
+                            </p>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        
+                        {/* Left: Timeline */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Evolutionary Stages
+                            </div>
+                            <EraSelector 
+                                currentEra={currentEraIndex} 
+                                eras={eras} 
+                                setEra={setCurrentEraIndex} 
+                            />
+                            
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2 flex items-center gap-2">
+                                    <FileText size={12} /> SEMIOTIC ANALYSIS
+                                </div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-[10px] border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right: The Artifact */}
+                        <div className="lg:col-span-8 relative min-h-[500px] flex items-center justify-center border border-unearth-border rounded-xl bg-unearth-surface shadow-lg">
+                            <div className="w-full h-full p-8 flex items-center justify-center">
+                                <EraDisplay era={eras[currentEraIndex]} />
+                            </div>
+                        </div>
+
+                    </main>
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p>Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- Render the App to the DOM ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

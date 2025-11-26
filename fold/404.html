@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Not Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+        }
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            background: radial-gradient(600px circle at var(--x) var(--y), rgba(239, 68, 68, 0.03), transparent 40%);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center text-center px-4">
+    <div class="spotlight"></div>
+    <div class="relative z-10">
+        <h1 class="text-9xl font-black text-white tracking-tighter">404</h1>
+        <p class="text-2xl font-mono text-gray-400 mt-4">Page Not Found</p>
+        <p class="text-gray-500 mt-2">The artifact you are looking for has been lost to time.</p>
+        <a href="/" class="mt-8 inline-block text-red-500 font-mono hover:text-white transition-colors">
+            &larr; Return to Gallery Index
+        </a>
+    </div>
+    <script>
+        window.addEventListener('mousemove', (e) => {
+            document.body.style.setProperty('--x', `${e.clientX}px`);
+            document.body.style.setProperty('--y', `${e.clientY}px`);
+        });
+    </script>
+</body>
+</html>

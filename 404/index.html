@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error 404 - A History of Getting Lost</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Lora:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. Component Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* Custom Tailwind Config */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+                'mono': ['Space Mono', 'monospace'],
+              }
+            }
+          }
+        }
+
+        /* Glitch Text Effect for Title */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* --- ERA 1: The Raw HTTP (1990s) --- */
+        .era-1-container {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: 'Times New Roman', serif;
+            padding: 40px;
+            height: 100%;
+        }
+        .raw-h1 { font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+        .raw-hr { border: 0; border-top: 1px solid #000; margin: 20px 0; }
+
+        /* --- ERA 2: The Browser Helper (2000s) --- */
+        .era-2-container {
+            background-color: #ffffff;
+            color: #000;
+            font-family: 'Verdana', sans-serif;
+            font-size: 12px;
+            padding: 40px;
+            height: 100%;
+            border-left: 10px solid #F0F0F0; 
+        }
+        .ie-header { font-family: 'Franklin Gothic Medium', sans-serif; font-size: 24px; color: #000; font-weight: normal; margin-bottom: 20px; }
+        .ie-list { margin-left: 20px; margin-bottom: 20px; list-style-type: disc; }
+        .ie-hr { border: 0; border-top: 1px solid #ccc; margin: 20px 0; }
+
+        /* --- ERA 3: The Whimsical (Web 2.0) --- */
+        .era-3-container {
+            background-color: #e0f7fa;
+            color: #006064;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .broken-robot {
+            font-size: 80px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .whimsy-btn {
+            background: #00bcd4;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            border: none;
+            box-shadow: 0 4px 0 #0097a7;
+            cursor: pointer;
+        }
+        .whimsy-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        /* --- ERA 4: The Game (Modern) --- */
+        .era-4-container {
+            background-color: #202124;
+            color: #acacac;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .dino-canvas {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            border-bottom: 1px solid #535353;
+            overflow: hidden;
+        }
+        .dino {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: #acacac;
+        }
+        .dino.jumping {
+            animation: jump 0.6s ease-out;
+        }
+        @keyframes jump {
+            0% { bottom: 0; }
+            50% { bottom: 80px; }
+            100% { bottom: 0; }
+        }
+        .cactus {
+            position: absolute;
+            bottom: 0;
+            right: -20px;
+            width: 20px;
+            height: 40px;
+            background: #acacac;
+            animation: slide 2s linear infinite;
+        }
+        @keyframes slide {
+            0% { right: -20px; }
+            100% { right: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- COMPONENTS ---
+
+        const EraDisplay = ({ era }) => {
+            // Era 4 State (Dino Game)
+            const [isJumping, setIsJumping] = useState(false);
+            const [score, setScore] = useState(0);
+            const [gameOver, setGameOver] = useState(false);
+
+            const handleJump = () => {
+                if (!isJumping && !gameOver) {
+                    setIsJumping(true);
+                    setTimeout(() => setIsJumping(false), 600);
+                    setScore(prev => prev + 10);
+                }
+                if (gameOver) {
+                    setGameOver(false);
+                    setScore(0);
+                }
+            };
+
+            // Simulate game loop just for score visuals
+            useEffect(() => {
+                if (era.id === 'game' && !gameOver) {
+                    const interval = setInterval(() => {
+                        setScore(s => s + 1);
+                    }, 100);
+                    return () => clearInterval(interval);
+                }
+            }, [era.id, gameOver]);
+
+            // Era 1: Raw Server
+            if (era.id === 'raw') {
+                return (
+                    <div className="era-1-container">
+                        <h1 className="raw-h1">Not Found</h1>
+                        <p>The requested URL /exhibits/future was not found on this server.</p>
+                        <hr className="raw-hr" />
+                        <p><i>Apache/2.2.22 (Ubuntu) Server at unearth.im Port 80</i></p>
+                    </div>
+                );
+            }
+
+            // Era 2: The Helper (IE Style)
+            if (era.id === 'helper') {
+                return (
+                    <div className="era-2-container">
+                        <div className="flex items-center gap-2 mb-4">
+                            <i className="fa-solid fa-triangle-exclamation" style={{fontSize: '32px', color: '#d97706'}}></i>
+                            <h2 className="ie-header">The page cannot be displayed</h2>
+                        </div>
+                        <p>The page you are looking for is currently unavailable. The Web site might be experiencing technical difficulties, or you may need to adjust your browser settings.</p>
+                        <hr className="ie-hr" />
+                        <p>Please try the following:</p>
+                        <ul className="ie-list">
+                            <li>Click the <span className="font-bold">Refresh</span> button, or try again later.</li>
+                            <li>If you typed the page address in the Address bar, make sure that it is spelled correctly.</li>
+                            <li>To check your connection settings, click the <span className="font-bold">Tools</span> menu, and then click <span className="font-bold">Internet Options</span>.</li>
+                        </ul>
+                        <p>HTTP 404 - File not found<br/>Internet Explorer</p>
+                    </div>
+                );
+            }
+
+            // Era 3: Whimsy
+            if (era.id === 'whimsy') {
+                return (
+                    <div className="era-3-container">
+                        <div className="broken-robot">🤖</div>
+                        <h1 className="text-4xl font-bold mt-4 mb-2">Oops!</h1>
+                        <h2 className="text-xl mb-6">We dropped the ball on this one.</h2>
+                        <p className="max-w-xs mx-auto mb-8">
+                            The page you're looking for seems to have wandered off. Maybe it was abducted by aliens? Or maybe it never existed...
+                        </p>
+                        <button className="whimsy-btn">
+                            Take Me Home
+                        </button>
+                    </div>
+                );
+            }
+
+            // Era 4: The Game
+            if (era.id === 'game') {
+                return (
+                    <div className="era-4-container" onClick={handleJump}>
+                        <div className="w-full max-w-md p-4">
+                            <i className="fa-solid fa-cloud-slash text-gray-500 mb-6" style={{fontSize: '48px'}}></i>
+                            <h2 className="text-2xl font-bold mb-2 text-gray-300">No internet</h2>
+                            <p className="text-sm text-gray-500 mb-8">
+                                Try checking the network cables, modem, and router.
+                            </p>
+                            <div className="text-xs text-gray-600 font-mono mb-1">ERR_INTERNET_DISCONNECTED</div>
+                            
+                            {/* The Game Area */}
+                            <div className="dino-canvas mt-12 bg-transparent">
+                                <div className="absolute top-2 right-2 font-mono font-bold text-gray-500">HI {score.toString().padStart(5, '0')}</div>
+                                
+                                {/* Dino */}
+                                <div className={`dino ${isJumping ? 'jumping' : ''}`}>
+                                    <div className="w-full h-full bg-gray-400"></div>
+                                </div>
+                                
+                                {/* Cactus */}
+                                <div className="cactus"></div>
+                            </div>
+                            <div className="mt-4 text-xs text-gray-500 text-center animate-pulse">
+                                [ SPACE or TAP to Jump ]
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button
+                            key={era.id}
+                            onClick={() => setEra(index)}
+                            className={`
+                                group flex items-center gap-4 text-left transition-all duration-300
+                                ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 flex items-center justify-center rounded-full border 
+                                transition-all duration-300 font-mono text-xs
+                                ${currentEra === index 
+                                    ? 'border-unearth-primary bg-unearth-primary text-white scale-110' 
+                                    : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-secondary'}
+                            `}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>
+                                    {era.title}
+                                </div>
+                                <div className="text-xs text-unearth-secondary opacity-70 uppercase tracking-wider">
+                                    {era.subtitle}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- MAIN APPLICATION ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+
+            const eras = [
+                {
+                    id: 'raw',
+                    year: '1990s',
+                    title: 'The Raw Protocol',
+                    subtitle: 'Apache Default',
+                    description: "In the beginning, there was only the server. The error message was not designed; it was exposed. '404' is a status code from the HTTP protocol. It wasn't meant for human consumption, but we saw it anyway. Stark, white, Times New Roman. It felt like hitting a brick wall.",
+                    tags: ['HTTP', 'Status Code', 'Raw HTML']
+                },
+                {
+                    id: 'helper',
+                    year: '2000s',
+                    title: 'The Browser Helper',
+                    subtitle: 'Internet Explorer',
+                    description: "Microsoft decided raw server errors were too scary. They replaced them with 'Friendly HTTP Error Messages.' But they weren't friendly. They were generic, confusing, and visually bland. They blamed the user ('Check your spelling') rather than the broken link.",
+                    tags: ['User Blame', 'Generic', 'Unhelpful']
+                },
+                {
+                    id: 'whimsy',
+                    year: '2008',
+                    title: 'The Whimsy Era',
+                    subtitle: 'Web 2.0',
+                    description: "Startups like Twitter, Tumblr, and GitHub realized that hitting a dead end causes 'Churn.' To keep users from leaving, they used humor. Cute illustrations (Fail Whales, lost robots) and self-deprecating jokes softened the frustration. The error became a brand moment.",
+                    tags: ['Fail Whale', 'Illustration', 'Empathy']
+                },
+                {
+                    id: 'game',
+                    year: '2014',
+                    title: 'The Game',
+                    subtitle: 'Chrome Dino',
+                    description: "Google Chrome turned the ultimate error—No Internet—into a feature. The Dino Run game proved that you can turn a negative user experience (failure) into a retention mechanic (entertainment). The error page became a destination in itself.",
+                    tags: ['Gamification', 'Retention', 'Easter Egg']
+                }
+            ];
+
+            return (
+                <div className="font-ui">
+                    {/* Header */}
+                    <header className="pt-24 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                         <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left"></i> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-011</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                ERROR <br/>
+                                <span className="text-unearth-primary glitch-text">404</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-narrative">
+                                A history of getting lost.
+                            </p>
+                        </div>
+                    </header>
+
+                    {/* Navigation hints */}
+                    <div className="sticky top-0 z-30 bg-unearth-bg/80 backdrop-blur-sm border-b border-unearth-border px-8 py-4 flex justify-between items-center text-xs font-mono uppercase tracking-widest text-unearth-secondary">
+                        <span>Failure States</span>
+                        <span>Depth: {eras.length} Layers</span>
+                    </div>
+
+                    {/* Main Exhibition Area */}
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        
+                        {/* Left: Timeline */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Error Evolution
+                            </div>
+                            <EraSelector 
+                                currentEra={currentEraIndex} 
+                                eras={eras} 
+                                setEra={setCurrentEraIndex} 
+                            />
+                            
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2 flex items-center gap-2">
+                                    <i className="fa-solid fa-file-circle-question" style={{fontSize: '12px'}}></i> CURATOR'S NOTE
+                                </div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed font-narrative">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-xs border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right: The Artifact */}
+                        <div className="lg:col-span-8 relative min-h-[500px] flex items-center justify-center border border-unearth-border rounded-xl bg-unearth-surface shadow-lg overflow-hidden">
+                            <div className="w-full h-full p-8 flex items-center justify-center">
+                                {/* Browser Frame Wrapper */}
+                                <div className="w-full h-[400px] border border-gray-400 rounded bg-white overflow-hidden relative">
+                                    <EraDisplay era={eras[currentEraIndex]} />
+                                </div>
+                            </div>
+                        </div>
+
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50 font-narrative">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- Render the App to the DOM ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Above The Fold - An Interactive Journey</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Lora:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. Component Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5; /* unearth-bg */
+            color: #1a1a1a; /* unearth-main */
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfaf5; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+        /* Typography */
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* Custom Tailwind Config */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'unearth-bg': '#fcfaf5',
+                'unearth-surface': '#ffffff',
+                'unearth-main': '#1a1a1a',
+                'unearth-secondary': '#6b7280',
+                'unearth-primary': '#BF5700',
+                'unearth-border': '#e5e7eb',
+              },
+              fontFamily: {
+                'narrative': ['Lora', 'serif'],
+                'ui': ['Inter', 'sans-serif'],
+                'mono': ['Space Mono', 'monospace'],
+              }
+            }
+          }
+        }
+
+        /* Glitch Text Effect for Title */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* --- ERA 1: The Newspaper (1995) --- */
+        .newspaper-container {
+            width: 100%;
+            max-width: 600px;
+            background: #f0f0f0;
+            color: #111;
+            font-family: 'Times New Roman', serif;
+            position: relative;
+            border: 1px solid #999;
+            height: 500px;
+            overflow: hidden;
+        }
+        .fold-line {
+            position: absolute;
+            top: 400px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #BF5700;
+            border-bottom: 1px dashed #BF5700;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fold-label {
+            background: #BF5700;
+            color: white;
+            font-family: sans-serif;
+            font-size: 10px;
+            padding: 2px 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .newspaper-header {
+            text-align: center;
+            border-bottom: 3px double black;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .newspaper-col {
+            text-align: justify;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* --- ERA 2: The Carousel (2005) --- */
+        .carousel-container {
+            width: 100%;
+            background: #fff;
+            color: #333;
+            font-family: 'Verdana', sans-serif;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+        .hero-slider {
+            height: 300px;
+            background: #333;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: background 0.5s;
+        }
+        .nav-dots {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        .dot {
+            width: 10px; 
+            height: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .dot.active { background: white; }
+
+        /* --- ERA 3: The Parallax (2013) --- */
+        .parallax-container {
+            width: 100%;
+            height: 400px;
+            overflow-y: auto;
+            perspective: 1px;
+            background: #111;
+            border: 1px solid #333;
+        }
+
+        /* --- ERA 4: The Infinite Feed (Present) --- */
+        .feed-container {
+            width: 100%;
+            max-width: 400px;
+            height: 500px;
+            background: #fff;
+            color: #000;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+        .feed-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .feed-avatar {
+            width: 40px; 
+            height: 40px;
+            background: #ddd;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .feed-lines {
+            height: 10px;
+            background: #eee;
+            margin-bottom: 6px;
+            border-radius: 4px;
+        }
+        .skeleton-pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- COMPONENTS ---
+
+        const EraDisplay = ({ era }) => {
+            // Era 2 State
+            const [slide, setSlide] = useState(0);
+            
+            // Era 4 State
+            const [items, setItems] = useState([1, 2, 3]);
+            const feedRef = useRef(null);
+
+            // Era 4 Infinite Scroll Logic
+            const handleScroll = () => {
+                if (feedRef.current) {
+                    const { scrollTop, scrollHeight, clientHeight } = feedRef.current;
+                    if (scrollTop + clientHeight >= scrollHeight - 10) {
+                        setItems(prev => [...prev, prev.length + 1]);
+                    }
+                }
+            };
+
+            // Era 1: The Newspaper
+            if (era.id === 'newspaper') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center relative">
+                        <div className="newspaper-container shadow-2xl relative">
+                            {/* THE FOLD LINE */}
+                            <div className="fold-line">
+                                <span className="fold-label">The Fold (600px)</span>
+                            </div>
+
+                            <div className="p-6">
+                                <div className="newspaper-header">
+                                    <h1 className="text-4xl font-black uppercase">The Daily Net</h1>
+                                    <div className="text-xs mt-2 flex justify-between border-t border-black pt-1">
+                                        <span>VOL. 1</span>
+                                        <span>SEPTEMBER 1995</span>
+                                        <span>FREE</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-2/3 newspaper-col">
+                                        <h2 className="font-bold text-xl mb-2">Designers Fear The Scroll</h2>
+                                        <p>
+                                            Experts say users will <strong>never</strong> scroll past the bottom of the screen. 
+                                            All critical information must be packed into the first 600 pixels. 
+                                            If it's below the fold, it doesn't exist.
+                                        </p>
+                                        <p className="mt-2">
+                                            This creates a dense, cluttered visual style where navigation, content, and ads fight for the same small rectangle of prime real estate.
+                                        </p>
+                                    </div>
+                                    <div className="w-1/3 newspaper-col bg-gray-200 p-2 border border-gray-400">
+                                        <div className="font-bold text-center mb-2">ADVERTISEMENT</div>
+                                        <div className="text-center text-xs">
+                                            Buy pixels here!
+                                            <br/><br/>
+                                            Must be visible without scrolling!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Hidden content below fold */}
+                            <div className="absolute top-[420px] left-0 w-full text-center text-gray-400 text-sm italic p-4">
+                                (No one will ever read this part...)
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 2: The Carousel
+            if (era.id === 'carousel') {
+                const colors = ['#2563eb', '#dc2626', '#16a34a'];
+                const headlines = [
+                    "Solution: Cram 5 Stories Here",
+                    "Users Don't Click Carousels",
+                    "But Marketing Loves Them"
+                ];
+
+                return (
+                    <div className="h-full flex flex-col items-center justify-center">
+                        <div className="carousel-container shadow-xl max-w-lg">
+                            <div className="bg-gray-100 p-2 border-b text-xs font-bold flex justify-between">
+                                <span>Corporate Portal v2.0</span>
+                                <span>Login</span>
+                            </div>
+                            
+                            {/* The Hero Slider */}
+                            <div 
+                                className="hero-slider" 
+                                style={{ backgroundColor: colors[slide] }}
+                                onClick={() => setSlide((slide + 1) % 3)}
+                            >
+                                <div className="p-8">
+                                    <h2 className="text-2xl font-bold mb-2">{headlines[slide]}</h2>
+                                    <p className="text-sm opacity-80">Click to rotate</p>
+                                    <button className="mt-4 bg-white text-black px-4 py-1 text-xs font-bold uppercase">
+                                        Read More
+                                    </button>
+                                </div>
+                                <div className="nav-dots">
+                                    {[0, 1, 2].map(i => (
+                                        <div key={i} className={`dot ${slide === i ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setSlide(i); }}></div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="p-4 grid grid-cols-3 gap-4">
+                                <div className="h-20 bg-gray-100"></div>
+                                <div className="h-20 bg-gray-100"></div>
+                                <div className="h-20 bg-gray-100"></div>
+                            </div>
+                        </div>
+                        <p className="mt-6 text-gray-500 text-xs max-w-xs text-center">
+                            To save space above the fold, we hid content behind clicks. <br/>
+                            It was the "Mystery Meat" of layout.
+                        </p>
+                    </div>
+                );
+            }
+
+            // Era 3: Parallax
+            if (era.id === 'parallax') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center w-full">
+                        <div className="parallax-container max-w-lg relative">
+                            <div className="h-[300px] flex items-center justify-center bg-blue-900 text-white font-bold text-2xl z-10 relative shadow-xl">
+                                SCROLL TO BEGIN
+                            </div>
+                            <div className="h-[300px] flex items-center justify-center bg-purple-900 text-white font-bold text-2xl z-0 relative">
+                                THE STORY UNFOLDS
+                            </div>
+                            <div className="h-[300px] flex items-center justify-center bg-pink-900 text-white font-bold text-2xl z-10 relative shadow-xl">
+                                DEPTH IS MEANING
+                            </div>
+                        </div>
+                        <div className="mt-4 text-unearth-secondary">
+                            <i className="fa-solid fa-arrow-down"></i>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Era 4: The Feed
+            if (era.id === 'feed') {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center">
+                        <div 
+                            className="feed-container shadow-2xl" 
+                            ref={feedRef}
+                            onScroll={handleScroll}
+                        >
+                            <div className="sticky top-0 bg-white/90 backdrop-blur border-b p-4 font-bold text-lg z-10 flex justify-between items-center">
+                                <span>Home</span>
+                                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                            </div>
+                            {items.map(i => (
+                                <div key={i} className="feed-item">
+                                    <div className="flex gap-3">
+                                        <div className="feed-avatar skeleton-pulse"></div>
+                                        <div className="flex-1">
+                                            <div className="feed-lines w-1/3 skeleton-pulse"></div>
+                                            <div className="feed-lines w-full skeleton-pulse"></div>
+                                            <div className="feed-lines w-5/6 skeleton-pulse"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="p-4 text-center text-xs text-gray-400">
+                                <i className="fa-solid fa-spinner fa-spin mb-2"></i>
+                                <p>Fetching more content...</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        const EraSelector = ({ currentEra, eras, setEra }) => {
+            return (
+                <div className="flex flex-col gap-4 relative z-10">
+                    {eras.map((era, index) => (
+                        <button
+                            key={era.id}
+                            onClick={() => setEra(index)}
+                            className={`
+                                group flex items-center gap-4 text-left transition-all duration-300
+                                ${currentEra === index ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 flex items-center justify-center rounded-full border 
+                                transition-all duration-300 font-mono text-xs
+                                ${currentEra === index 
+                                    ? 'border-unearth-primary bg-unearth-primary text-white scale-110' 
+                                    : 'border-unearth-border text-unearth-secondary group-hover:border-unearth-secondary'}
+                            `}>
+                                {era.year}
+                            </div>
+                            <div>
+                                <div className={`font-bold text-sm ${currentEra === index ? 'text-unearth-main' : 'text-unearth-secondary'}`}>
+                                    {era.title}
+                                </div>
+                                <div className="text-xs text-unearth-secondary opacity-70 uppercase tracking-wider">
+                                    {era.subtitle}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            );
+        };
+
+        // --- MAIN APPLICATION ---
+
+        function App() {
+            const [currentEraIndex, setCurrentEraIndex] = useState(0);
+
+            const eras = [
+                {
+                    id: 'newspaper',
+                    year: '1995',
+                    title: 'The Fold',
+                    subtitle: '600x800 Monitors',
+                    description: "Borrowed from newspapers (where the paper physically folded), this concept ruled web design for a decade. Clients were terrified that users wouldn't scroll. This led to cramming every logo, link, and CTA into the top 600 pixels, creating dense, unusable interfaces.",
+                    tags: ['Newspaper Metaphor', 'Resolution', 'Fear']
+                },
+                {
+                    id: 'carousel',
+                    year: '2005',
+                    title: 'The Carousel',
+                    subtitle: 'Flash & jQuery',
+                    description: "How do you fit 5000 pixels of content into 600 pixels of space? You hide it. The 'Hero Slider' or Carousel was the compromise. It allowed multiple messages above the fold, but usability studies later showed almost no one clicked past the first slide.",
+                    tags: ['Slider', 'Hidden Content', 'Compromise']
+                },
+                {
+                    id: 'parallax',
+                    year: '2013',
+                    title: 'The Scroll',
+                    subtitle: 'Storytelling',
+                    description: "With the death of Flash and the rise of HTML5, the scroll became a canvas. Parallax scrolling turned the vertical movement into a Z-axis journey. We stopped fearing the scroll and started using it to reveal information sequentially.",
+                    tags: ['HTML5', 'Depth', 'Narrative']
+                },
+                {
+                    id: 'feed',
+                    year: 'Present',
+                    title: 'The Infinite',
+                    subtitle: 'Mobile Feed',
+                    description: "The iPhone and the Scroll Wheel killed the fold. On mobile, scrolling is easier than clicking. Social media introduced the 'Infinite Feed,' where there is no bottom. The fold is dead; the stream is eternal.",
+                    tags: ['Dopamine', 'Mobile-First', 'Flow']
+                }
+            ];
+
+            return (
+                <div className="font-ui">
+                    {/* Header */}
+                    <header className="pt-24 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border">
+                         <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                             <a href="../" className="hover:text-unearth-main transition-colors flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left"></i> Gallery Index
+                             </a>
+                             <span className="text-unearth-secondary">/</span>
+                             <span className="text-unearth-secondary">ART-010</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                ABOVE <br/>
+                                <span className="text-unearth-primary glitch-text">THE FOLD</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-narrative">
+                                The myth of the newspaper metaphor.
+                            </p>
+                        </div>
+                    </header>
+
+                    {/* Navigation hints */}
+                    <div className="sticky top-0 z-30 bg-unearth-bg/80 backdrop-blur-sm border-b border-unearth-border px-8 py-4 flex justify-between items-center text-xs font-mono uppercase tracking-widest text-unearth-secondary">
+                        <span>Scroll Down to Excavate</span>
+                        <span>Depth: {eras.length} Layers</span>
+                    </div>
+
+                    {/* Main Exhibition Area */}
+                    <main className="max-w-7xl mx-auto z-20 relative px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        
+                        {/* Left: Timeline */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest mb-8 border-b border-unearth-border pb-2">
+                                Vertical History
+                            </div>
+                            <EraSelector 
+                                currentEra={currentEraIndex} 
+                                eras={eras} 
+                                setEra={setCurrentEraIndex} 
+                            />
+                            
+                            <div className="p-6 bg-unearth-surface border border-unearth-border rounded-lg mt-8">
+                                <div className="text-xs text-unearth-primary font-mono mb-2 flex items-center gap-2">
+                                    <i className="fa-solid fa-layer-group" style={{fontSize: '12px'}}></i> LAYOUT ANALYSIS
+                                </div>
+                                <p className="text-sm text-unearth-secondary leading-relaxed font-narrative">
+                                    {eras[currentEraIndex].description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {eras[currentEraIndex].tags.map(tag => (
+                                        <span key={tag} className="text-xs border border-unearth-border px-2 py-1 rounded text-unearth-secondary font-mono">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right: The Artifact */}
+                        <div className="lg:col-span-8 relative min-h-[500px] flex items-center justify-center border border-unearth-border rounded-xl bg-unearth-surface shadow-lg overflow-hidden">
+                            <div className="w-full h-full p-8 flex items-center justify-center">
+                                <EraDisplay era={eras[currentEraIndex]} />
+                            </div>
+                        </div>
+
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="mt-20 py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 opacity-50 font-narrative">Provenance: unearth.im</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- Render the App to the DOM ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

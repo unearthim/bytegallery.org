@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- === Primary Meta Tags === -->
+    <title>The Digital Odometer | The Byte Gallery</title>
+    <meta name="title" content="The Digital Odometer | The Byte Gallery">
+    <meta name="description" content="The Hit Counter: A simple, often garish, odometer displaying page visits. The web's first measure of public validation.">
+    <meta name="keywords" content="Hit Counter, Web Counter, Digital Archaeology, Web 1.0, Internet History, bytegallery.org">
+    <meta name="author" content="bytegallery.org (An unearth.im Project)">
+    <meta name="robots" content="index, follow">
+    
+    <!-- === Open Graph === -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://bytegallery.org/counter/">
+    <meta property="og:title" content="The Digital Odometer | The Byte Gallery">
+    <meta property="og:description" content="The Hit Counter: A simple, often garish, odometer displaying page visits. The web's first measure of public validation.">
+    <meta property="og:image" content="https://bytegallery.org/og-image.png">
+
+    <!-- === Favicons === -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <!-- === Fonts === -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+    
+    <!-- === Font Awesome === -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --bg-color: #fcfaf5;
+            --surface: #ffffff;
+            --text-main: #1a1a1a;
+            --text-secondary: #6b7280;
+            --accent: #BF5700;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .font-narrative { font-family: 'Lora', serif; }
+        .font-mono { font-family: 'VT323', monospace; }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: rgba(252, 250, 245, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 2px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .logo-main {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .logo-sub {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+        }
+
+        .back-link {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .accession {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 0.95;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+        }
+
+        .meta-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Content Section */
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 6rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-content {
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 800px;
+        }
+
+        .section-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Counter Gallery */
+        .counter-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .counter-example {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .counter-example:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .counter-display {
+            font-family: 'VT323', monospace;
+            font-size: 3rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            letter-spacing: 0.1em;
+        }
+
+        .counter-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Style variations */
+        .style-1990s { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .style-neon { background: #000; color: #00ff00; text-shadow: 0 0 10px #00ff00; }
+        .style-digital { background: #1a1a1a; color: #ff0000; font-family: 'Courier New', monospace; }
+        .style-chrome { background: linear-gradient(to bottom, #e0e0e0 0%, #8c8c8c 50%, #e0e0e0 100%); color: #000; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
+        .style-lcd { background: #9fbc00; color: #0f380f; font-family: 'VT323', monospace; }
+        .style-fire { background: linear-gradient(to top, #ff0000, #ff7700, #ffff00); color: #000; font-weight: bold; }
+
+        /* Interactive Counter */
+        .interactive-section {
+            background: var(--surface);
+            border: 2px solid var(--accent);
+            padding: 3rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .live-counter {
+            font-family: 'VT323', monospace;
+            font-size: 4rem;
+            color: var(--accent);
+            margin: 2rem 0;
+            letter-spacing: 0.1em;
+            text-shadow: 2px 2px 0 rgba(191, 87, 0, 0.2);
+        }
+
+        .counter-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -3.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid var(--bg-color);
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content {
+            font-family: 'Lora', serif;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 4rem 2rem;
+            background: var(--surface);
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-info h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-info p {
+            font-family: 'Lora', serif;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-meta {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .subtitle { font-size: 1rem; }
+            .counter-display { font-size: 1.5rem; }
+            .live-counter { font-size: 2.5rem; }
+            .timeline { padding-left: 2rem; }
+            .timeline-dot { left: -2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../" class="logo">
+                <div class="logo-icon">u</div>
+                <div class="logo-text">
+                    <span class="logo-main">archaeobytology.org</span>
+                    <span class="logo-sub">Byte Gallery</span>
+                </div>
+            </a>
+            <a href="../" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to Gallery
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="accession">ART-018 / DIGITAL VALIDATION</div>
+        <h1 class="title">THE DIGITAL<br>ODOMETER</h1>
+        <p class="subtitle">A simple, often garish, odometer displaying page visits. A primitive form of analytics and the web's first measure of public validation.</p>
+        
+        <div class="meta-grid">
+            <div class="meta-item">
+                <span class="meta-label">Era</span>
+                <span class="meta-value">1995 - 2001</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Classification</span>
+                <span class="meta-value">Petribyte</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">State</span>
+                <span class="meta-value">Fossilized</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Cultural Impact</span>
+                <span class="meta-value">Critical</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <!-- Introduction -->
+        <section class="section">
+            <h2 class="section-title">The Artifact</h2>
+            <div class="section-content">
+                <p>Before Google Analytics, before server logs became sophisticated dashboards, before "engagement metrics" and "unique visitors," there was a simpler, more honest form of validation: the hit counter.</p>
+                
+                <p>A small, often animated GIF sitting at the bottom of a webpage, incrementing with each visit. Sometimes elegant. Often garish. Always honest. It was the web's first public odometer—a digital proof of existence that declared, simply: "You are not alone here."</p>
+                
+                <p>The hit counter was democratic. It didn't care about bounce rates or session duration. Every visit counted. Every single one. And everyone could see the number.</p>
+            </div>
+        </section>
+
+        <!-- Interactive Counter -->
+        <div class="interactive-section">
+            <h3 class="section-title">Experience The Artifact</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">This page has been visited:</p>
+            <div class="live-counter" id="liveCounter">000042069</div>
+            <div class="counter-actions">
+                <button class="btn" onclick="incrementCounter()">
+                    <i class="fa-solid fa-plus"></i> Increment Visit
+                </button>
+                <button class="btn" onclick="randomizeCounter()">
+                    <i class="fa-solid fa-shuffle"></i> Randomize
+                </button>
+                <button class="btn" onclick="resetCounter()">
+                    <i class="fa-solid fa-rotate-left"></i> Reset to Zero
+                </button>
+            </div>
+        </div>
+
+        <!-- Counter Gallery -->
+        <section class="section">
+            <h2 class="section-title">The Visual Language</h2>
+            <div class="section-content">
+                <p>Hit counters came in countless styles, each representing different aesthetics of the early web. Here are some archetypal examples:</p>
+            </div>
+            
+            <div class="counter-gallery">
+                <div class="counter-example">
+                    <div class="counter-display style-1990s">0042069</div>
+                    <div class="counter-label">Purple Gradient<br>ca. 1996</div>
+                </div>
+                
+                <div class="counter-example">
+                    <div class="counter-display style-neon">0042069</div>
+                    <div class="counter-label">Terminal Green<br>ca. 1997</div>
+                </div>
+                
+                <div class="counter-example">
+                    <div class="counter-display style-digital">0042069</div>
+                    <div class="counter-label">Digital Red<br>ca. 1998</div>
+                </div>
+                
+                <div class="counter-example">
+                    <div class="counter-display style-chrome">0042069</div>
+                    <div class="counter-label">Chrome Bevel<br>ca. 1999</div>
+                </div>
+                
+                <div class="counter-example">
+                    <div class="counter-display style-lcd">0042069</div>
+                    <div class="counter-label">LCD Screen<br>ca. 2000</div>
+                </div>
+                
+                <div class="counter-example">
+                    <div class="counter-display style-fire">0042069</div>
+                    <div class="counter-label">Fire Gradient<br>ca. 1997</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cultural Context -->
+        <section class="section">
+            <h2 class="section-title">The Psychology of Visibility</h2>
+            <div class="section-content">
+                <p>The hit counter was revolutionary not for its technology, but for its <em>transparency</em>. For the first time in digital history, traffic was public. You couldn't hide behind algorithms or carefully curated feeds. If three people visited your site, everyone knew.</p>
+                
+                <p>This created a peculiar culture of honesty. A low number wasn't shameful—it was the truth. A high number wasn't just vanity—it was earned. The hit counter democratized validation, making it visible to creator and visitor alike.</p>
+                
+                <p>It also introduced a new form of digital anxiety: counter envy. Seeing a rival homepage with 10,000 hits while yours sat at 247 could sting. But it also motivated. The counter was feedback, encouragement, and competition all at once.</p>
+            </div>
+        </section>
+
+        <!-- Technical Evolution -->
+        <section class="section">
+            <h2 class="section-title">Technical Evolution</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1995</div>
+                    <div class="timeline-content">
+                        First web counters appear as CGI scripts. Simple text displays incrementing with each page load via server-side processing.
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1996</div>
+                    <div class="timeline-content">
+                        Third-party services like WebCounter and TheCounter.com emerge, offering embeddable counters with customizable styles. No server access required.
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1997-1999</div>
+                    <div class="timeline-content">
+                        Peak era of counter aesthetics. Animated GIFs, odometer-style rollovers, and themed designs proliferate. Counters become status symbols.
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2000-2001</div>
+                    <div class="timeline-content">
+                        Decline begins. JavaScript-based analytics emerge. Privacy concerns grow. "Invisible" tracking becomes the norm. The transparent counter falls out of fashion.
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2005-Present</div>
+                    <div class="timeline-content">
+                        Complete obsolescence. Analytics move behind login walls. Public counters survive only as novelty or nostalgia. The era of transparent metrics ends.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Lesson -->
+        <section class="section">
+            <h2 class="section-title">The Archaeological Lesson</h2>
+            <div class="section-content">
+                <p>The hit counter teaches us something profound about digital culture: <strong>transparency creates accountability</strong>.</p>
+                
+                <p>When metrics were public, they were honest. When they moved behind dashboards, they became negotiable. The modern web trades in invisible numbers—follower counts that can be bought, engagement rates that can be gamed, "impressions" that may or may not represent human attention.</p>
+                
+                <p>The hit counter couldn't lie. It was a number. It counted hits. That was all.</p>
+                
+                <p>Perhaps that's why it died. In an age of curation and optimization, brutal honesty became unmarketable. But the counter's ghost haunts every analytics dashboard. We still want the validation. We just hide the number now.</p>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <div class="interactive-section" style="border-color: var(--border);">
+            <h3 class="section-title">Preserve Your Own Digital History</h3>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem;">Have an old website with a hit counter preserved on archive.org? We'd love to document it for the gallery.</p>
+            <a href="mailto:hello@unearth.im?subject=Hit Counter Submission" class="btn" style="display: inline-block; text-decoration: none;">
+                <i class="fa-solid fa-envelope"></i> Submit Your Counter
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h4><a href="https://unearth.im" style="color: var(--text-main); text-decoration: none;">unearth.im</a></h4>
+                <p>"Landmarks, not just addresses."<br>Archaeobytology | Archive & Anvil.</p>
+            </div>
+            <div class="footer-meta">
+                <p style="margin-bottom: 0.5rem;">© 2025 unearth.im • All rights reserved</p>
+                <p style="color: rgba(107, 114, 128, 0.5);">ARTIFACT_ID: ART-018</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentCount = 42069;
+        
+        function updateDisplay() {
+            const counterEl = document.getElementById('liveCounter');
+            counterEl.textContent = String(currentCount).padStart(9, '0');
+        }
+        
+        function incrementCounter() {
+            currentCount++;
+            updateDisplay();
+            animateCounter();
+        }
+        
+        function randomizeCounter() {
+            currentCount = Math.floor(Math.random() * 999999);
+            updateDisplay();
+            animateCounter();
+        }
+        
+        function resetCounter() {
+            currentCount = 0;
+            updateDisplay();
+            animateCounter();
+        }
+        
+        function animateCounter() {
+            const counterEl = document.getElementById('liveCounter');
+            counterEl.style.transform = 'scale(1.1)';
+            counterEl.style.color = '#ff7700';
+            setTimeout(() => {
+                counterEl.style.transform = 'scale(1)';
+                counterEl.style.color = 'var(--accent)';
+            }, 200);
+        }
+        
+        // Auto-increment simulation (optional - uncomment to enable)
+        // setInterval(() => {
+        //     if (Math.random() > 0.7) incrementCounter();
+        // }, 3000);
+    </script>
+
+</body>
+</html>
