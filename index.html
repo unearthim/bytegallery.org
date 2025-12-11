@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script type="application/ld+json">
     {
@@ -33,7 +34,7 @@
           "@type": "Organization",
           "@id": "https://unearth.im/#organization",
           "name": "Unearth Heritage Foundry",
-"alternateName": ["Unearth Foundry", "Archive & Anvil"],
+"alternateName": ["Unearth Foundry","Archive & Anvil","Unearth Anvil","Unearth Works","Cultural Infrastructure Foundry"],
           "url": "https://unearth.im",
           "logo": {
             "@type": "ImageObject",
@@ -73,8 +74,10 @@
     <!-- === 1. Primary Meta Tags === -->
     <title>The Byte Gallery | An Interactive Museum of Digital Artifacts</title>
     <meta name="title" content="The Byte Gallery | An Interactive Museum of Digital Artifacts">
-    <meta name="description" content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner. An unearth.im project.">
-    <meta name="keywords" content="Digital Archaeology, Byte Gallery, Web History, Internet Fossils, Skeuomorphism, Web 1.0, UI/UX History, Digital Preservation, unearth.im">
+    <meta name="description"
+        content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner. An unearth.im project.">
+    <meta name="keywords"
+        content="Digital Archaeology, Byte Gallery, Web History, Internet Fossils, Skeuomorphism, Web 1.0, UI/UX History, Digital Preservation, unearth.im">
     <meta name="author" content="bytegallery.org (by unearth heritage foundry - archive & anvil - unearth.im)">
     <meta name="robots" content="index, follow">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -88,7 +91,8 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bytegallery.org/">
     <meta property="og:title" content="The Byte Gallery | An Interactive Museum of Digital Artifacts">
-    <meta property="og:description" content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner.">
+    <meta property="og:description"
+        content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner.">
     <meta property="og:image" content="https://bytegallery.org/og-image.png">
     <meta property="og:site_name" content="The Byte Gallery">
 
@@ -96,7 +100,8 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://bytegallery.org/">
     <meta property="twitter:title" content="The Byte Gallery | An Interactive Museum of Digital Artifacts">
-    <meta property="twitter:description" content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner.">
+    <meta property="twitter:description"
+        content="An interactive museum of digital artifacts. Excavating the fossils of the web, from the <blink> tag to the modern spinner.">
     <meta property="twitter:image" content="https://bytegallery.org/og-image.png">
 
     <!-- === 5. Favicons & Theme Colors === -->
@@ -115,48 +120,69 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Lora:wght@400;600&display=swap"
+        rel="stylesheet">
 
     <!-- 3. Styles -->
     <style>
         body {
-            background-color: #fcfaf5; /* unearth-bg */
-            color: #1a1a1a; /* unearth-main */
+            background-color: #fcfaf5;
+            /* unearth-bg */
+            color: #1a1a1a;
+            /* unearth-main */
             font-family: 'ui', 'Inter', sans-serif;
             margin: 0;
             overflow-x: hidden;
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #fcfaf5; }
-        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #fcfaf5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
 
         /* Typography */
-        .font-narrative { font-family: 'Lora', serif; }
-        .font-ui { font-family: 'Inter', sans-serif; }
+        .font-narrative {
+            font-family: 'Lora', serif;
+        }
+
+        .font-ui {
+            font-family: 'Inter', sans-serif;
+        }
 
         /* Custom Tailwind Config via JS */
-        tailwind.config = {
-          theme: {
-            extend: {
-              colors: {
-                'unearth-bg': '#fcfaf5',
-                'unearth-surface': '#ffffff',
-                'unearth-main': '#1a1a1a',
-                'unearth-secondary': '#6b7280',
-                'unearth-primary': '#BF5700',
-                'unearth-border': '#e5e7eb',
-              },
-              fontFamily: {
-                'narrative': ['Lora', 'serif'],
-                'ui': ['Inter', 'sans-serif'],
-              }
+        tailwind.config= {
+            theme: {
+                extend: {
+                    colors: {
+                        'unearth-bg': '#fcfaf5',
+                            'unearth-surface': '#ffffff',
+                            'unearth-main': '#1a1a1a',
+                            'unearth-secondary': '#6b7280',
+                            'unearth-primary': '#BF5700',
+                            'unearth-border': '#e5e7eb',
+                    }
+
+                    ,
+                    fontFamily: {
+                        'narrative': ['Lora', 'serif'],
+                            'ui': ['Inter', 'sans-serif'],
+                    }
+                }
             }
-          }
         }
     </style>
 </head>
+
 <body>
 
     <!-- 4. React Root -->
@@ -210,7 +236,7 @@
                         <span className="text-xs text-unearth-secondary/70 font-mono uppercase">
                             Origin: {exhibit.era}
                         </span>
-                        
+
                         {isLocked ? (
                             <i className="fa-solid fa-lock text-unearth-secondary/50"></i>
                         ) : (
@@ -241,10 +267,10 @@
                             <span className="text-[10px] text-unearth-secondary font-mono uppercase tracking-widest">Byte Gallery</span>
                         </div>
                     </div>
-                    
+
                     <nav className="hidden md:flex gap-6 text-xs font-mono text-unearth-secondary uppercase tracking-widest">
                         <a href="https://archaeobytology.org/" className="hover:text-unearth-primary transition-colors">Manifesto</a>
-                    <a href="#" className="hover:text-unearth-primary transition-colors">Archive</a>
+                        <a href="#" className="hover:text-unearth-primary transition-colors">Archive</a>
                         <a href="#" className="hover:text-unearth-primary transition-colors">Contact</a>
                     </nav>
                 </div>
@@ -316,7 +342,7 @@
                     id: "ART-008",
                     title: "The Digital Finger",
                     era: "1968 - Present",
-                     description: "The evolution of the Cursor. From the blinking terminal block to the anthropomorphic pointing hand.",
+                    description: "The evolution of the Cursor. From the blinking terminal block to the anthropomorphic pointing hand.",
                     status: "excavating",
                     link: null
                 },
@@ -324,7 +350,7 @@
                     id: "ART-009",
                     title: "The Unfinished Web",
                     era: "1995 - 2001",
-                     description: "A tribute to the chaotic creativity of Geocities. Shoveling GIFs, spinning email icons, and the 'Work in Progress' mindset.",
+                    description: "A tribute to the chaotic creativity of Geocities. Shoveling GIFs, spinning email icons, and the 'Work in Progress' mindset.",
                     status: "open",
                     link: "./unfinished/"
                 },
@@ -332,7 +358,7 @@
                     id: "ART-010",
                     title: "The Mythical Line",
                     era: "1996 - 2015",
-                     description: "The myth of the newspaper metaphor. How the scroll wheel and mobile screens finally killed the idea of 'The Fold.'",
+                    description: "The myth of the newspaper metaphor. How the scroll wheel and mobile screens finally killed the idea of 'The Fold.'",
                     status: "open",
                     link: "./fold/"
                 },
@@ -477,16 +503,16 @@
                                 <i className="fa-solid fa-terminal text-unearth-primary"></i>
                                 <span className="font-mono text-sm text-unearth-primary">EST. 2025 // ARCHAEOBYTOLOGY.ORG</span>
                             </div>
-                            
+
                             <h1 className="text-6xl md:text-8xl font-black text-unearth-main leading-[0.9] tracking-tighter mb-8">
                                 ARCHIVING THE <br />
                                 <span className="text-unearth-secondary">ANTHROPOCENE</span> <br />
                                 <span className="text-unearth-primary">WEB.</span>
                             </h1>
-                            
+
                             <p className="font-narrative text-xl text-unearth-secondary max-w-2xl leading-relaxed">
-                                The internet is not a cloud; it is a geological formation. 
-                                We excavate code, design patterns, and user behaviors to reveal 
+                                The internet is not a cloud; it is a geological formation.
+                                We excavate code, design patterns, and user behaviors to reveal
                                 the human history buried in the source.
                             </p>
 
@@ -526,7 +552,7 @@
                             <div>
                                 <p className="font-narrative text-unearth-secondary text-sm max-w-md mb-4">
                                     <small>
-                                        a <b><a href="https://sentientification.com" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary transition-colors underline">liminal mind meld</a></b> collaboration:<br/>
+                                        a <b><a href="https://sentientification.com" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary transition-colors underline">liminal mind meld</a></b> collaboration:<br />
                                         digital monument by <b><a href="https://unearth.im" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary transition-colors underline">unearth.im</a></b> | <b><a href="https://archaeobytology.org" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary transition-colors underline">archive & anvil</a></b>
                                     </small>
                                 </p>
@@ -558,4 +584,5 @@
     </script>
 
 </body>
+
 </html>
