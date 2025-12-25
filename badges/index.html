@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Browser War Badge - An Interactive Excavation</title>
+
+    <!-- 1. Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 2. Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Lora:wght@400;600&family=Press+Start+2P&family=Silkscreen&display=swap"
+        rel="stylesheet">
+
+    <!-- 3. Component Styles -->
+    <style>
+        body {
+            background-color: #fcfaf5;
+            /* unearth-bg */
+            color: #1a1a1a;
+            /* unearth-main */
+            font-family: 'ui', 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #fcfaf5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
+
+        /* Typography */
+        .font-narrative {
+            font-family: 'Lora', serif;
+        }
+
+        .font-ui {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-pixel {
+            font-family: 'Silkscreen', cursive;
+        }
+
+        /* --- 88x31 BADGE STYLES --- */
+        .badge-container {
+            width: 88px;
+            height: 31px;
+            image-rendering: pixelated;
+            display: flex;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-container:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Netscape Style */
+        .badge-netscape {
+            background: linear-gradient(to right, #008080 0%, #008080 70%, #000000 70%, #000000 100%);
+            border: 1px solid #ffffff;
+            outline: 1px solid #000000;
+        }
+
+        /* IE Style */
+        .badge-ie {
+            background: linear-gradient(to bottom, #ffffff 0%, #cccccc 100%);
+            border: 1px solid #888;
+        }
+
+        /* Notepad Style */
+        .badge-notepad {
+            background: #ffffff;
+            border: 1px solid #000000;
+        }
+
+        /* Any Browser Style */
+        .badge-any {
+            background: #d3d3d3;
+            border: 1px solid #999;
+        }
+
+        /* Valid HTML Style */
+        .badge-w3c {
+            background: #fcce04;
+            color: #000;
+            border: 1px solid #cc9900;
+        }
+
+        /* Glitch Text Effect for Title */
+        .glitch-text:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                transform: translate(0)
+            }
+
+            20% {
+                transform: translate(-2px, 2px)
+            }
+
+            40% {
+                transform: translate(-2px, -2px)
+            }
+
+            60% {
+                transform: translate(2px, 2px)
+            }
+
+            80% {
+                transform: translate(2px, -2px)
+            }
+
+            100% {
+                transform: translate(0)
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'unearth-bg': '#fcfaf5',
+                        'unearth-surface': '#ffffff',
+                        'unearth-main': '#1a1a1a',
+                        'unearth-secondary': '#6b7280',
+                        'unearth-primary': '#BF5700',
+                        'unearth-border': '#e5e7eb',
+                    },
+                    fontFamily: {
+                        'narrative': ['Lora', 'serif'],
+                        'ui': ['Inter', 'sans-serif'],
+                        'pixel': ['Silkscreen', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Sub-Components ---
+
+        const Badge88x31 = ({ type, text1, text2, icon, onClick }) => {
+            const renderContent = () => {
+                switch (type) {
+                    case 'netscape':
+                        return (
+                            <div className="w-full h-full flex items-center justify-between px-1 text-[8px] font-pixel text-white leading-none badge-netscape">
+                                <span className="font-bold tracking-tighter text-shadow-sm">N</span>
+                                <span className="flex-1 text-center font-bold tracking-wide">NETSCAPE<br /><span className="text-[6px] opacity-80">NOW!</span></span>
+                            </div>
+                        );
+                    case 'ie':
+                        return (
+                            <div className="w-full h-full flex items-center justify-center gap-1 badge-ie">
+                                <span className="text-blue-600 font-serif font-black italic text-lg relative top-[-1px]">e</span>
+                                <div className="flex flex-col items-start leading-none">
+                                    <span className="text-[6px] text-black font-ui uppercase">Microsoft</span>
+                                    <span className="text-[7px] text-black font-ui font-bold">Explorer</span>
+                                </div>
+                            </div>
+                        );
+                    case 'notepad':
+                        return (
+                            <div className="w-full h-full flex items-center gap-1 badge-notepad px-1">
+                                <i className="fa-regular fa-file-lines text-blue-500 text-xs"></i>
+                                <div className="flex flex-col leading-none">
+                                    <span className="text-[6px] text-black font-pixel">MADE WITH</span>
+                                    <span className="text-[7px] text-red-600 font-pixel font-bold">NOTEPAD</span>
+                                </div>
+                            </div>
+                        );
+                    case 'w3c':
+                        return (
+                            <div className="w-full h-full flex flex-col items-center justify-center leading-none badge-w3c">
+                                <span className="text-[8px] font-bold font-sans">W3C</span>
+                                <div className="flex gap-1 text-[6px]">
+                                    <span>HTML</span>
+                                    <span>4.0</span>
+                                </div>
+                            </div>
+                        );
+                    case 'any':
+                        return (
+                            <div className="w-full h-full flex items-stretch badge-any border-0">
+                                <div className="w-1/2 bg-[#666] text-white flex items-center justify-center text-[7px] font-sans font-bold leading-tight px-1 text-center">
+                                    ANY<br />BROWSER
+                                </div>
+                                <div className="w-1/2 bg-[#ff9900] text-black flex items-center justify-center text-[7px] font-sans font-bold leading-tight px-1 text-caps text-center">
+                                    CAMPAIGN
+                                </div>
+                            </div>
+                        );
+                    default:
+                        return (
+                            <div className="w-full h-full bg-gray-200 border border-gray-400 flex items-center justify-center text-[8px] font-pixel">
+                                {text1}
+                            </div>
+                        );
+                }
+            };
+
+            return (
+                <div className="badge-container" onClick={onClick}>
+                    {renderContent()}
+                </div>
+            );
+        };
+
+        const ArtifactSection = ({ title, description, children }) => (
+            <section className="py-16 border-b border-unearth-border">
+                <div className="max-w-4xl mx-auto px-6">
+                    <h2 className="text-2xl font-bold mb-4 font-ui text-unearth-main flex items-center gap-3">
+                        <i className="fa-solid fa-layer-group text-unearth-primary text-sm"></i>
+                        {title}
+                    </h2>
+                    <p className="text-unearth-secondary mb-10 font-narrative text-lg leading-relaxed max-w-2xl">
+                        {description}
+                    </p>
+                    <div className="bg-gray-100/50 p-10 rounded-xl border border-unearth-border border-dashed flex flex-wrap gap-8 items-center justify-center">
+                        {children}
+                    </div>
+                </div>
+            </section>
+        );
+
+        // --- Main Application ---
+
+        function App() {
+            const [generatedText, setGeneratedText] = useState("YOUR SITE");
+            const canvasRef = useRef(null);
+
+            const handleDownload = () => {
+                // Simple mock download logic or canvas generation would go here
+                alert("Badge saved to memory (simulated).");
+            };
+
+            return (
+                <div className="font-ui min-h-screen flex flex-col">
+
+                    {/* Header */}
+                    <header className="pt-24 pb-12 px-8 md:px-20 z-20 relative border-b border-unearth-border bg-unearth-bg">
+                        <div className="flex items-center gap-4 mb-4 text-unearth-primary">
+                            <a href="../" className="hover:text-unearth-main transition-colors flex items-center gap-2">
+                                <i className="fa-solid fa-arrow-left"></i> Gallery Index
+                            </a>
+                            <span className="text-unearth-secondary">/</span>
+                            <span className="text-unearth-secondary">ART-020</span>
+                        </div>
+                        <div className="border-l-2 border-unearth-primary pl-6">
+                            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-unearth-main">
+                                THE BROWSER WAR <br />
+                                <span className="text-unearth-primary glitch-text">BADGE</span>
+                            </h1>
+                            <p className="text-unearth-secondary max-w-xl text-lg font-narrative">
+                                A pixelated allegiance. The 88x31 billboard of the early web.
+                            </p>
+                        </div>
+                    </header>
+
+                    {/* Intro Grid */}
+                    <div className="w-full h-8 bg-repeat-x flex overflow-hidden opacity-50 border-b border-unearth-border" style={{ backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnPjxyZWN0IHdpZHRoPSc0JyBoZWlnaHQ9JzQnIGZpbGw9J3doaXRlJy8+PHJlY3Qgd2lkdGg9JzEnIGhlaWdodD0nMScgZmlsbD0nI2U1ZTdlYicvPjwvc3ZnPg==")' }}>
+                        {/* Decorative scrolling badges strip could go here */}
+                    </div>
+
+                    <main className="flex-grow">
+
+                        {/* Era 1: The War */}
+                        <ArtifactSection
+                            title="The Partisans (1996 - 1999)"
+                            description="The first browser war wasn't fought in courtrooms, but in the footers of personal homepages. 'Best Viewed In' buttons were effectively political campaign pins. Choosing a side meant functionality: Netscape supported certain tags, IE supported others. Your badge was your compatibility statement."
+                        >
+                            <div className="flex flex-col gap-6 items-center">
+                                <div className="flex gap-4">
+                                    <Badge88x31 type="netscape" onClick={() => alert("Netscape Navigator 4.0 detected.")} />
+                                    <Badge88x31 type="netscape" />
+                                </div>
+                                <div className="text-xs font-mono text-unearth-secondary uppercase tracking-widest">VS</div>
+                                <div className="flex gap-4">
+                                    <Badge88x31 type="ie" onClick={() => alert("ActiveX Control Loaded.")} />
+                                    <Badge88x31 type="ie" />
+                                </div>
+                            </div>
+                        </ArtifactSection>
+
+                        {/* Era 2: The Craft */}
+                        <ArtifactSection
+                            title="The Craftsman's Mark (1998 - 2004)"
+                            description="As tools like FrontPage and Dreamweaver democratized—and homogenized—web design, a counter-movement emerged. The 'Made with Notepad' badge became the ultimate flex of the digital artisan. It signified hand-coded purity, a rejection of bloated generated code."
+                        >
+                            <Badge88x31 type="notepad" onClick={() => alert("Opening notepad.exe...")} />
+                            <Badge88x31 type="w3c" />
+                            <div className="badge-container bg-black text-green-500 font-mono text-[6px] flex items-center justify-center border border-green-800">
+                                &lt;HAND_CODED /&gt;
+                            </div>
+                        </ArtifactSection>
+
+                        {/* Era 3: The Switzerland Option */}
+                        <ArtifactSection
+                            title="The Pacifists (Any Browser)"
+                            description="Tired of the broken layouts and proprietary tags, the 'Viewable With Any Browser' campaign launched as a plea for standardization. These orange and grey buttons represented a dream of an interoperable web—one we are still chasing today."
+                        >
+                            <Badge88x31 type="any" onClick={() => alert("Standardization Initiative.")} />
+                        </ArtifactSection>
+
+                        {/* Interactive: Generator */}
+                        <section className="py-20 bg-unearth-surface border-t border-unearth-border">
+                            <div className="max-w-4xl mx-auto px-6 text-center">
+                                <h2 className="text-3xl font-bold mb-8 text-unearth-main">Mint Your Allegiance</h2>
+                                <div className="flex flex-col items-center gap-8">
+
+                                    {/* Preview */}
+                                    <div className="scale-[2.0] transform-gpu mb-8 p-4 bg-gray-50 rounded border border-unearth-border dashed">
+                                        <div className="badge-container flex items-center justify-center bg-unearth-primary border border-black text-white px-1 leading-none shadow-sm">
+                                            <div className="w-6 h-6 bg-white/20 mr-1 flex items-center justify-center text-[10px]">
+                                                <i className="fa-solid fa-code"></i>
+                                            </div>
+                                            <div className="flex flex-col items-start">
+                                                <span className="text-[6px] font-pixel uppercase opacity-80">BUILT FOR</span>
+                                                <span className="text-[7px] font-pixel font-bold uppercase">{generatedText || "THE WEB"}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Controls */}
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="text"
+                                            maxLength="10"
+                                            placeholder="YOUR TEXT"
+                                            className="border border-unearth-border px-4 py-2 font-mono text-sm focus:outline-none focus:border-unearth-primary"
+                                            onChange={(e) => setGeneratedText(e.target.value)}
+                                        />
+                                        <button
+                                            onClick={handleDownload}
+                                            className="bg-unearth-main text-white px-6 py-2 font-mono text-xs hover:bg-unearth-primary transition-colors uppercase tracking-widest"
+                                        >
+                                            Save Badge
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="py-12 text-center border-t border-unearth-border text-unearth-secondary font-mono text-sm relative z-20 bg-unearth-bg">
+                        <p className="font-narrative">Curated by Jojo | Digital Archaeologist</p>
+                        <p className="mt-2 font-narrative">
+                            <small>
+                                a <b><a href="https://sentientification.com" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary underline">liminal mind meld</a></b> collaboration: digital monument by <b><a href="https://unearth.im" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary underline">unearth.im</a></b> | <b><a href="https://archaeobytology.org" target="_blank" rel="noopener noreferrer" className="hover:text-unearth-primary underline">archive & anvil</a></b>
+                            </small>
+                        </p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- Render ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+</body>
+
+</html>
